@@ -1,0 +1,9 @@
+
+Command lines to compile are: 
+	make -f Makefile_Boiler
+	make -f Makefile_HeatPump
+
+Command lines to clean up are: 
+	make -f Makefile_Boiler clean
+	make -f Makefile_HeatPump clean
+

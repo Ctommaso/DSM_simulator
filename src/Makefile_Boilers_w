@@ -1,0 +1,29 @@
+CC=mingw32-g++
+CFLAGS= -std=c++11 -Wall -g -pedantic -O3
+LDFLAGS= -std=c++11 -Wall -pedantic -O3 -static
+EXEC=Boilers.exe
+VPATH = AutoQuar_Classes
+
+all: $(EXEC)
+
+Boilers.exe: Array.o Boiler.o Weather.o main_Boilers.o
+	$(CC) -o Boilers.exe Array.o Boiler.o Weather.o main_Boilers.o $(LDFLAGS)
+
+Array.o: Array.cpp
+	$(CC) -o Array.o -c $< $(CFLAGS)
+
+Boiler.o: Boiler.cpp
+	$(CC) -o Boiler.o -c $< $(CFLAGS)
+
+Weather.o: Weather.cpp
+	$(CC) -o Weather.o -c $< $(CFLAGS)
+
+main_Boilers.o: main_Boilers.cpp Array.h Boiler.h Weather.h
+	$(CC) -o main_Boilers.o -c main_Boilers.cpp $(CFLAGS)
+
+.PHONY: clean
+clean:
+	del -rf *.o
+	
+mrproper: clean
+	del -rf $(EXEC)

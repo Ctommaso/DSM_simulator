@@ -1,0 +1,38 @@
+CC=g++
+CFLAGS= -std=c++11 -Wall -g -pedantic -O3
+LDFLAGS= -std=c++11 -Wall -pedantic -O3 -static
+EXEC=executable
+VPATH=../../Classes: ../AutoCons_Classes
+
+all: $(EXEC)
+
+executable: Array.o SortingPairs.o House.o Weather.o Neighborhood.o main.o
+	$(CC) -o executable Array.o SortingPairs.o House.o Weather.o Neighborhood.o main.o $(LDFLAGS)
+
+Neighborhood.o: Neighborhood.cpp Array.h House.h
+	$(CC) -o Neighborhood.o -c $< $(CFLAGS)
+
+Weather.o: Weather.cpp Array.h
+	$(CC) -o Weather.o -c $< $(CFLAGS) 
+
+Array.o: Array.cpp
+	$(CC) -o Array.o -c $< $(CFLAGS)
+
+SortingPairs.o: SortingPairs.cpp
+	$(CC) -o SortingPairs.o -c $< $(CFLAGS)
+
+House.o: House.cpp
+	$(CC) -o House.o -c $< $(CFLAGS)
+
+Boiler.o: Boiler.cpp
+	$(CC) -o Boiler.o -c $< $(CFLAGS)
+
+main.o: main.cpp Array.h House.h SortingPairs.h Neighborhood.h Weather.h
+	$(CC) -o main.o -c main.cpp $(CFLAGS)
+
+.PHONY: clean
+clean:
+	rm -rf *.o
+
+mrproper: clean
+	rm -rf $(EXEC)

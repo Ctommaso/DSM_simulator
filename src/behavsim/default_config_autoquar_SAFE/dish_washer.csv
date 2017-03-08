@@ -1,0 +1,3 @@
+Name of the Simulation,Heating Power [W],Washing Power [W],Heating Duration [min],Washing Duration [min],Number of Cycles,Number of Heatings,Probability [%],Earliest Start [hour],Latest Start [hour]
+dish_washer,1800,180,15,10,1,2,60,7,23
+-,18,1.8,1.5,1,1,0,-,-,-

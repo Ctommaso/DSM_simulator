@@ -1,0 +1,3 @@
+Name of the Simulation,Power [W],Duration [hour]
+base_load,100,6
+-,10,2

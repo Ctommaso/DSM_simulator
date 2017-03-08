@@ -1,0 +1,3 @@
+Name of the Simulation,Heating Power [W],Washing Power [W],Spinning Power [W],Heating Duration [min],Inter Heating Delay [min],Washing Duration [min],Spinning Duration [min],Number of Cycles,Number of Heatings,Probability [%],Earliest Start [hour],Latest Start [hour]
+washing_machine,2000,150,200,15,5,20,15,1,2,30,7,23
+-,20,1.5,2,1.5,0.5,2,1.5,1,1,-,-,-

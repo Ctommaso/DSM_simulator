@@ -1,0 +1,3 @@
+Name of the Simulation,Power [W],Duration [min],Breakfast Time [hour],Lunch Time [hour],Dinner Time [hour],Breakfast Time (WE) [hour],Lunch Time (WE) [hour],Dinner Time (WE) [hour],Breakfast Prob [%],Lunch Prob [%],Dinner Prob [%],Breakfast Prob (WE) [%],Lunch Prob (WE) [%],Dinner Prob (WE) [%],Keeps Water Warm?,Inter Heating Time [min]
+coffee_machine,1000,5,7,13,20,10,13,20,80,20,80,80,60,80,Yes,15
+-,10,0.5,1,1,1,1,1,1,-,-,-,-,-,-,-,1

@@ -1,0 +1,3 @@
+Name of the Simulation,Power [W],Breakfast Duration [min],Lunch Duration [min],Dinner Duration [min],Breakfast Duration (WE) [min],Lunch Duration (WE) [min],Dinner Duration (WE) [min],Breakfast Time [hour],Lunch Time [hour],Dinner Time [hour],Breakfast Time (WE) [hour],Lunch Time (WE) [hour],Dinner Time (WE) [hour],Breakfast Prob [%],Lunch Prob [%],Dinner Prob [%],Breakfast Prob (WE) [%],Lunch Prob (WE) [%],Dinner Prob (WE) [%]
+oven,2400,30,75,75,30,75,75,7,12,19,9,12,19,10,30,50,10,50,50
+-,24,3,7.5,7.5,3,7.5,7.5,1,1,1,1,1,1,-,-,-,-,-,-

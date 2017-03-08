@@ -1,0 +1,3 @@
+Name of the Simulation,Power [W],Compressor On [min],Compressor Off [min],Cycle Probability [%]
+freezer,210,30,70,95
+-,2.1,3,7,-
