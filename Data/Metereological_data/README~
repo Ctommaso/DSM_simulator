@@ -1,0 +1,10 @@
+Weather timeseries generated using Meteonorm. 
+Datapoints for every minute for 151 days (January-May).
+
+City_Radiation_40: Radiation [W] on a south oriented 40° inclined surface (data used for PV production)
+City_Radiation_90: Radiation [W] on a south oriented vertical (90°) surface (data used for solar gains)
+City_Temerature: Temperature [°C]
+
+Weather data available for the cities:
+ Sion
+ ...
