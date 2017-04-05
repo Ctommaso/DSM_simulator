@@ -6,7 +6,6 @@ import numpy as np
 import sys
 import platform
 import gc
-from pympler.tracker import SummaryTracker
 from src.behavsim.behavsim_kernel import run_behavsim
 from Visualization_Scripts.Aggregated_Load import plot_aggregated_load
 from Visualization_Scripts.Battery_Usage import plot_battery_usage
