@@ -24,23 +24,17 @@ int main()
 	int house_num(0), num_days(0), starting_day(0);
 	double Av_window_S(0), battery_capacity(0), battery_power(0);
 	string file_T,file_Rad90,file_Rad40, file_Residual;
+	bool load_neighborhood(false);
 	cin >> house_num >> starting_day >> num_days >> file_T >> file_Rad90 
-	    >> file_Rad40 >> file_Residual >> Av_window_S >> battery_capacity >> battery_power;
-	
-	std::pair<double, double> TH_CAPACITY(13000,27000); // Thermal Capacity interval [Wh/°K] corresponding to [50-100] MJ/°K 13000,27000
-	std::pair<double, double> TH_COND(150,300); // Thermal Conductivity interval [W/°C]
-	std::pair<double, double> REF_T(21,23);// Comfort Temperature
-	std::pair<double, double> CONFORT_INTERVAL(1.5,1.5);// Comfort Interval
-	std::pair<double, double> WINDOWS(Av_window_S-5,Av_window_S+5); // South oriented window surface
-	std::pair<double, double> BATTERY(1000*battery_capacity,1000*battery_power); // Pair to describe battery (capacity, power)[Wh, W]
+	    >> file_Rad40 >> file_Residual >> Av_window_S >> battery_capacity >> battery_power >> load_neighborhood;
 	
 	Weather w(file_T,file_Rad90,file_Rad40);
 	Array Residual_load(file_Residual);
 	
 	auto start = chrono::steady_clock::now(); //Start timing
-	
-	Neighborhood n(house_num, TH_CAPACITY, TH_COND, REF_T, CONFORT_INTERVAL, WINDOWS, BATTERY);
-	n.Save_state("Neighborhood.dat");
+		
+	Neighborhood n;
+	init_neighborhood(n, house_num, load_neighborhood);
 	
 	run_simulation(n, num_days, starting_day, false, Residual_load, w); //Simulate Thermostat
 	run_simulation(n, num_days, starting_day, true, Residual_load, w); //Simulate Smart
@@ -51,6 +45,25 @@ int main()
 	cout <<"Duration="<< (chrono::duration <double, milli> (diff).count())/1000 << "seconds" << endl;
 	
 	return 0;
+}
+// *********************************************************************
+
+void init_neighborhood(Neighborhood & n, int house_num bool load_neighborhood)
+{	
+	if(load_neighborhood)
+	{
+		n = Neighborhood(house_num, fn);  //CAREFUL! include filename of neighborhood here!
+	}else{
+		std::pair<double, double> TH_CAPACITY(13000,27000); // Thermal Capacity interval [Wh/°K] corresponding to [50-100] MJ/°K 13000,27000
+		std::pair<double, double> TH_COND(150,300); // Thermal Conductivity interval [W/°C]
+		std::pair<double, double> REF_T(21,23);// Comfort Temperature
+		std::pair<double, double> CONFORT_INTERVAL(1.5,1.5);// Comfort Interval
+		std::pair<double, double> WINDOWS(Av_window_S-5,Av_window_S+5); // South oriented window surface
+		std::pair<double, double> BATTERY(1000*battery_capacity,1000*battery_power); // Pair to describe battery (capacity, power)[Wh, W]
+		
+		n = Neighborhood(house_num, TH_CAPACITY, TH_COND, REF_T, CONFORT_INTERVAL, WINDOWS, BATTERY);
+		n.Save_state("Neighborhood.dat");
+	}
 }
 
 // *********************************************************************

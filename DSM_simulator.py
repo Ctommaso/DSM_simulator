@@ -1,4 +1,5 @@
 from Tkinter import *
+import tkFileDialog
 from PIL import Image
 import os
 import shutil
@@ -14,7 +15,6 @@ from Visualization_Scripts.Line_Load import plot_line_load
 from Visualization_Scripts.Switch_counts import plot_switch_counts
 from Visualization_Scripts.Boiler_Consumption import plot_boilers
 
-
 class Simulator(object):
 	# DEFINE SIMULATOR
 	def __init__(self, master):
@@ -25,6 +25,9 @@ class Simulator(object):
 		self.start_day = 0
 		self.num_days = 0
 		self.PV_surface = 0
+		self.neighborhood_fn = None
+		self.old_neighborhood_data = False
+		
 		self.PV_peak_power = StringVar()
 		self.PV_peak_power.set("")
 		self.PV_efficiency=0.18
@@ -102,6 +105,7 @@ class Simulator(object):
 		self.boilers_menu.config(font=("Helvetica", 12),indicator=0,bg='white',fg='black',compound='left')
 
 		# Buttons
+		self.load_neighborhood_button = Button(master, text="Load neighborhood", command=self.load_neighborhood,font=("Helvetica", 12),bg='white',fg='black')
 		self.run_button = Button(master, text="Run", command=self.run,font=("Helvetica", 12),bg='white',fg='black')
 		self.aggregated_load_button = Button(master, text="Plot Aggregated Load", command=self.plot_aggregated_load,font=("Helvetica", 12),bg='white',fg='black')
 		self.autoconsumption_button = Button(master, text="Plot Self Consumption Rate", command=self.plot_self_consumption,font=("Helvetica", 12),bg='white',fg='black')
@@ -114,38 +118,39 @@ class Simulator(object):
 		self.master.title("Simulator AUTOQUAR")
 		self.master.configure(background='white')
 		self.label_message.grid(row=0, column=0,columnspan=3, sticky=W)
-		self.label_nodes.grid(row=1, column=0, sticky=W)
-		self.label_start_day.grid(row=2, column=0, sticky=W)
-		self.label_num_days.grid(row=3, column=0, sticky=W)
-		self.label_PV.grid(row=4, column=0, sticky=W)
-		self.label_PV_peak_power.grid(row=5, column=0, sticky=W)
-		self.label_battery_capacity.grid(row=6, column=0, sticky=W)
-		self.label_battery_power.grid(row=7, column=0, sticky=W)
-		self.label_city.grid(row=8, column=0, sticky=W)
-		self.label_boilers.grid(row=9, column=0, sticky=W)
-		self.label_washers.grid(row=10, column=0, sticky=W)
+		self.load_neighborhood_button.grid(row=1, column=0,columnspan=1, sticky=W)
+		self.label_nodes.grid(row=2, column=0, sticky=W)
+		self.label_start_day.grid(row=3, column=0, sticky=W)
+		self.label_num_days.grid(row=4, column=0, sticky=W)
+		self.label_PV.grid(row=5, column=0, sticky=W)
+		self.label_PV_peak_power.grid(row=6, column=0, sticky=W)
+		self.label_battery_capacity.grid(row=7, column=0, sticky=W)
+		self.label_battery_power.grid(row=8, column=0, sticky=W)
+		self.label_city.grid(row=9, column=0, sticky=W)
+		self.label_boilers.grid(row=10, column=0, sticky=W)
+		self.label_washers.grid(row=11, column=0, sticky=W)
 			
-		self.entry_nodes.grid(row=1, column=2, sticky=W+E)
-		self.entry_start_day.grid(row=2, column=2, sticky=W+E)
-		self.entry_num_days.grid(row=3, column=2, sticky=W+E)
-		self.entry_PV.grid(row=4, column=2, sticky=W+E)
-		self.entry_battery_capacity.grid(row=6, column=2, sticky=W+E)
-		self.entry_battery_power.grid(row=7, column=2, sticky=W+E)
+		self.entry_nodes.grid(row=2, column=2, sticky=W+E)
+		self.entry_start_day.grid(row=3, column=2, sticky=W+E)
+		self.entry_num_days.grid(row=4, column=2, sticky=W+E)
+		self.entry_PV.grid(row=5, column=2, sticky=W+E)
+		self.entry_battery_capacity.grid(row=7, column=2, sticky=W+E)
+		self.entry_battery_power.grid(row=8, column=2, sticky=W+E)
 		
-		self.city_menu.grid(row=8, column=2, sticky=W+E)	
-		self.boilers_menu.grid(row=9, column=2, sticky=W+E)	
-		self.washers_menu.grid(row=10, column=2, sticky=W+E)	
-		self.run_button.grid(row=11, column=1,sticky=W+E)
-		self.aggregated_load_button.grid(row=12, column=0,sticky=W+E)
-		self.autoconsumption_button.grid(row=12, column=1,sticky=W+E)
-		self.battery_button.grid(row=12, column=2,sticky=W+E)
-		self.switches_button.grid(row=13, column=0,sticky=W+E)
-		self.boiler_button.grid(row=13, column=1,sticky=W+E)
-		self.network_load_button.grid(row=13, column=2,sticky=W+E)
+		self.city_menu.grid(row=9, column=2, sticky=W+E)	
+		self.boilers_menu.grid(row=10, column=2, sticky=W+E)	
+		self.washers_menu.grid(row=11, column=2, sticky=W+E)	
+		self.run_button.grid(row=12, column=1,sticky=W+E)
+		self.aggregated_load_button.grid(row=13, column=0,sticky=W+E)
+		self.autoconsumption_button.grid(row=13, column=1,sticky=W+E)
+		self.battery_button.grid(row=13, column=2,sticky=W+E)
+		self.switches_button.grid(row=14, column=0,sticky=W+E)
+		self.boiler_button.grid(row=14, column=1,sticky=W+E)
+		self.network_load_button.grid(row=14, column=2,sticky=W+E)
 							
 	#Function to validate the entries
 	def validate(self,new_text,entry_type):
-				
+		
 		if entry_type=="nodes":
 			try:
 				self.num_nodes = int(new_text)
@@ -219,6 +224,17 @@ class Simulator(object):
 		except ValueError:
 				return False
 	
+	#Function to load an existing neighborhood 
+	def load_neighborhood(self):
+		
+		self.entry_nodes.config(state='normal')
+		self.neighborhood_fn = tkFileDialog.askopenfilename(filetypes = [('all files', '.*'), ('text files', '.txt')], title = 'Load neighborhood')
+		new_text = str(len(np.loadtxt(self.neighborhood_fn)))
+		self.old_neighborhood_data = True
+		self.entry_nodes.insert(0,new_text)
+		self.entry_nodes.delete(len(new_text),END)
+		self.entry_nodes.config(state='disabled')
+		
 	#Function to run the simulation
 	def run(self):
 		
@@ -256,6 +272,9 @@ class Simulator(object):
 		else:
 			os.makedirs(results_path)
 		os.chdir(results_path)
+		
+		if self.old_neighborhood_data:
+			shutil.copy(self.neighborhood_fn,os.getcwd())
 		
 		# Saves the timeseries used in the simulation 
 		self.message.set("STATUS: Storing Time Series")
@@ -300,10 +319,11 @@ class Simulator(object):
 		Input_file_Heat_Pumps(self.num_nodes, self.start_day, self.num_days, 
 		                      self.average_window_surf,self.battery_capacity,
 		                      self.battery_power,self.PV_surface,
-		                      self.PV_efficiency,self.simulate_boilers)
+		                      self.PV_efficiency,self.simulate_boilers,
+		                      self.old_neighborhood_data)
 		# Run c++
-		os.system (prefix+"HeatPump.exe < Input_Heat_Pump.txt")
-		os.remove("HeatPump.exe")
+		#os.system (prefix+"HeatPump.exe < Input_Heat_Pump.txt")
+		#os.remove("HeatPump.exe")
 
 		self.message.set("STATUS: Simulation completed")
 		self.master.update_idletasks()
@@ -412,7 +432,7 @@ class Simulator(object):
 			print "Simulation data not available"
 
 # Creates the input file for the Heat Pump c++ executable 
-def Input_file_Heat_Pumps(num_houses,starting_day,num_days,window_surf,battery_capacity,battery_power,pv_surface,pv_efficiency,simulate_boilers):
+def Input_file_Heat_Pumps(num_houses,starting_day,num_days,window_surf,battery_capacity,battery_power,pv_surface,pv_efficiency,simulate_boilers,loaded_neighborhood):
 	f=open("Input_Heat_Pump.txt",'w')
 	f.write(str(num_houses) +'\n')
 	f.write(str(starting_day) +'\n')
@@ -429,6 +449,10 @@ def Input_file_Heat_Pumps(num_houses,starting_day,num_days,window_surf,battery_c
 	f.write(str(battery_power)+'\n')
 	f.write(str(pv_surface)+'\n')
 	f.write(str(pv_efficiency)+'\n')
+	if loaded_neighborhood==True:
+		f.write("1" +'\n')
+	else:
+		f.write("0" +'\n')
 	f.close()
 	
 # Creates the input file for the Boilers c++ executable 
