@@ -234,6 +234,7 @@ class Simulator(object):
 		self.entry_nodes.insert(0,new_text)
 		self.entry_nodes.delete(len(new_text),END)
 		self.entry_nodes.config(state='disabled')
+		print self.neighborhood_fn
 		
 	#Function to run the simulation
 	def run(self):
@@ -274,7 +275,8 @@ class Simulator(object):
 		os.chdir(results_path)
 		
 		if self.old_neighborhood_data:
-			shutil.copy(self.neighborhood_fn,os.getcwd())
+			print os.getcwd()
+			shutil.copyfile(self.neighborhood_fn,os.getcwd()+"/Neighborhood.dat")
 		
 		# Saves the timeseries used in the simulation 
 		self.message.set("STATUS: Storing Time Series")
@@ -322,8 +324,8 @@ class Simulator(object):
 		                      self.PV_efficiency,self.simulate_boilers,
 		                      self.old_neighborhood_data)
 		# Run c++
-		#os.system (prefix+"HeatPump.exe < Input_Heat_Pump.txt")
-		#os.remove("HeatPump.exe")
+		os.system (prefix+"HeatPump.exe < Input_Heat_Pump.txt")
+		os.remove("HeatPump.exe")
 
 		self.message.set("STATUS: Simulation completed")
 		self.master.update_idletasks()
@@ -447,12 +449,12 @@ def Input_file_Heat_Pumps(num_houses,starting_day,num_days,window_surf,battery_c
 	f.write(str(window_surf)+'\n')
 	f.write(str(battery_capacity)+'\n')
 	f.write(str(battery_power)+'\n')
-	f.write(str(pv_surface)+'\n')
-	f.write(str(pv_efficiency)+'\n')
 	if loaded_neighborhood==True:
 		f.write("1" +'\n')
 	else:
 		f.write("0" +'\n')
+	f.write(str(pv_surface)+'\n')
+	f.write(str(pv_efficiency)+'\n')
 	f.close()
 	
 # Creates the input file for the Boilers c++ executable 

@@ -129,8 +129,8 @@ def main():
 	num_houses =int(data[0])
 	starting_day =int(data[1])
 	num_days =int(data[2])
-	pv_surf = float(data[10])
-	pv_efficiency = float(data[11])
+	pv_surf = float(data[11])
+	pv_efficiency = float(data[12])
 	R40=np.loadtxt(dir_name+'R40.dat')
 	Domestic_appliances=np.loadtxt(dir_name+"House_aggregate.dat")
 

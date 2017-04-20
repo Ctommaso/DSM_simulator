@@ -100,6 +100,5 @@ def main():
 		hot_water = np.transpose(hot_water.values)
 		plot_boilers(start_day,num_days,hot_water,city,standalone)
 	
-
 if __name__ == '__main__':
     main()

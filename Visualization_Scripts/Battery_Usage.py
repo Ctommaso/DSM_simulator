@@ -114,7 +114,7 @@ def main():
 	num_houses =int(data[0])
 	starting_day =int(data[1])
 	num_days =int(data[2])
-	pv_surf = float(data[10])
+	pv_surf = float(data[11])
 	T=np.loadtxt(dir_name+'T.dat')
 	R40=np.loadtxt(dir_name+'R40.dat')
 	R90=np.loadtxt(dir_name+'R90.dat')	

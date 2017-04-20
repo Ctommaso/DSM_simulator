@@ -52,27 +52,28 @@ Neighborhood::Neighborhood(int NUM_HOUSES,string filename)
 	ifstream infile;
 	infile.open(filename);
 
-	double t_ref,tinitiale,conductivity,capacity,windows,confort_interval;
+	double t_ref,tinitiale,conductivity,capacity,windows,confort_interval,battery_capacity,battery_power;
 	vector<double> Tinitiale;
 	bool Switch_initial;
 	
 	vector< int > SWITCH_COUNTER(NUM_HOUSES,0);
 	switch_counter=SWITCH_COUNTER;
 	
-	Battery b(10000.0,3000.0);// Capacity 10kWh, Power 3kW, Check battery constructor to see SoC and initial state
-	
 	while(true)
 	{
-		infile >> t_ref >> confort_interval >> conductivity >> capacity >> tinitiale >> Switch_initial>> windows;
+		infile >> t_ref >> confort_interval >> conductivity >> capacity >> tinitiale >> Switch_initial
+		       >> windows >> battery_capacity >> battery_power;
 		if(infile.eof()) break;
 		Tinitiale.push_back(tinitiale);
 		if(Switch_initial){Ptot_HP+=conductivity*30.0;}
 		House h(capacity,conductivity,conductivity*30.0,Switch_initial,t_ref,confort_interval,windows);
 		houses.push_back(h);
-		compteur++;
 		
-		// All batteries are the same
+		// All batteries are the same, consturctor: SoC = 0 and initial state = 0
+		Battery b(battery_capacity, battery_power);
 		batteries.push_back(b);
+		
+		compteur++;
 	}
 	infile.close();
 	Array t(num_houses,Tinitiale);
@@ -87,7 +88,10 @@ void Neighborhood::Save_state(string filename)
 	
 	for(int i(0);i<num_houses;i++)
 	{
-		file<<houses[i].get_Tref()<<" "<<houses[i].get_ConfortInterval()<<" "<<houses[i].get_Th_Cond()<<" "<<houses[i].get_Th_Capacity()<<" "<<T.getComposante(i)<<" "<<houses[i].HP_on()<<" "<<houses[i].get_Window_Surf()<<endl;
+		file<<houses[i].get_Tref()<<" "<<houses[i].get_ConfortInterval()<<" "
+		    <<houses[i].get_Th_Cond()<<" "<<houses[i].get_Th_Capacity()<<" "
+		    <<T.getComposante(i)<<" "<<houses[i].HP_on()<<" "<<houses[i].get_Window_Surf()<<" "
+		    <<batteries[i].get_capacity()<<" "<<batteries[i].get_power()<<endl;
 	}
 	file.close();
 }

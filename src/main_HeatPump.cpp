@@ -17,6 +17,7 @@ using namespace std;
 //Function definitions *****
 void run_simulation(Neighborhood n, int num_days, int starting_day, bool smart, const Array & Residual_load, const Weather & w); 
 void run_simulation(Neighborhood n, int num_days, int starting_day, bool smart, bool battery, const Array & Residual_load, const Weather & w); 
+void init_neighborhood(Neighborhood & n, int house_num, bool load_neighborhood, double Av_window_S, double battery_capacity, double battery_power);
 //**************************
 
 int main()
@@ -34,7 +35,7 @@ int main()
 	auto start = chrono::steady_clock::now(); //Start timing
 		
 	Neighborhood n;
-	init_neighborhood(n, house_num, load_neighborhood);
+	init_neighborhood(n, house_num, load_neighborhood, Av_window_S, battery_capacity, battery_power);
 	
 	run_simulation(n, num_days, starting_day, false, Residual_load, w); //Simulate Thermostat
 	run_simulation(n, num_days, starting_day, true, Residual_load, w); //Simulate Smart
@@ -46,13 +47,15 @@ int main()
 	
 	return 0;
 }
-// *********************************************************************
 
-void init_neighborhood(Neighborhood & n, int house_num bool load_neighborhood)
+// *********************************************************************
+void init_neighborhood(Neighborhood & n, int house_num, bool load_neighborhood, double Av_window_S, double battery_capacity, double battery_power)
 {	
-	if(load_neighborhood)
+	string fn("Neighborhood.dat");
+	if(load_neighborhood==true)
 	{
-		n = Neighborhood(house_num, fn);  //CAREFUL! include filename of neighborhood here!
+		cout << "YO NO NEED TO INVENT ONE"<<endl;
+		n = Neighborhood(house_num, fn); //Load neighborhood from existing file
 	}else{
 		std::pair<double, double> TH_CAPACITY(13000,27000); // Thermal Capacity interval [Wh/°K] corresponding to [50-100] MJ/°K 13000,27000
 		std::pair<double, double> TH_COND(150,300); // Thermal Conductivity interval [W/°C]
@@ -61,8 +64,9 @@ void init_neighborhood(Neighborhood & n, int house_num bool load_neighborhood)
 		std::pair<double, double> WINDOWS(Av_window_S-5,Av_window_S+5); // South oriented window surface
 		std::pair<double, double> BATTERY(1000*battery_capacity,1000*battery_power); // Pair to describe battery (capacity, power)[Wh, W]
 		
-		n = Neighborhood(house_num, TH_CAPACITY, TH_COND, REF_T, CONFORT_INTERVAL, WINDOWS, BATTERY);
-		n.Save_state("Neighborhood.dat");
+		//Neighborhood constructor, based on uniform distribution
+		n = Neighborhood(house_num, TH_CAPACITY, TH_COND, REF_T, CONFORT_INTERVAL, WINDOWS, BATTERY); 
+		n.Save_state(fn);
 	}
 }
 
