@@ -6,13 +6,13 @@ VPATH = AutoQuar_Classes
 
 all: $(EXEC)
 
-HeatPump.exe: Array.o SortingPairs.o House.o Weather.o Neighborhood.o Battery.o Control.o Time_integration.o main_HeatPump.o
-	$(CC) -o HeatPump.exe Array.o SortingPairs.o House.o Weather.o Neighborhood.o main_HeatPump.o Battery.o Control.o Time_integration.o $(LDFLAGS)
+HeatPump.exe: Array.o SortingPairs.o House.o Weather.o Neighborhood.o Battery.o Control.o Time_integration.o Boiler.o main_HeatPump.o
+	$(CC) -o HeatPump.exe Array.o SortingPairs.o House.o Weather.o Neighborhood.o main_HeatPump.o Battery.o Control.o Boiler.o Time_integration.o $(LDFLAGS)
 
-Control.o: Control.cpp Neighborhood.h SortingPairs.h Weather.h
+Control.o: Control.cpp Neighborhood.h SortingPairs.h Weather.h Boiler.h
 	$(CC) -o Control.o -c $< $(CFLAGS)
 
-Time_integration.o: Time_integration.cpp Neighborhood.h Weather.h
+Time_integration.o: Time_integration.cpp Neighborhood.h Weather.h Control.h Boiler.h
 	$(CC) -o Time_integration.o -c $< $(CFLAGS)
 
 Neighborhood.o: Neighborhood.cpp Array.h House.h Battery.h
@@ -24,6 +24,9 @@ Weather.o: Weather.cpp Array.h
 Array.o: Array.cpp
 	$(CC) -o Array.o -c $< $(CFLAGS)
 
+Boiler.o: Boiler.cpp
+	$(CC) -o Boiler.o -c $< $(CFLAGS)
+
 SortingPairs.o: SortingPairs.cpp
 	$(CC) -o SortingPairs.o -c $< $(CFLAGS)
 
@@ -33,7 +36,7 @@ House.o: House.cpp
 Battery.o: Battery.cpp
 	$(CC) -o Battery.o -c $< $(CFLAGS)
 
-main_HeatPump.o: main_HeatPump.cpp Array.h House.h SortingPairs.h Neighborhood.h Weather.h Battery.h Control.h Time_integration.h
+main_HeatPump.o: main_HeatPump.cpp Array.h House.h SortingPairs.h Neighborhood.h Weather.h Battery.h Control.h Time_integration.h 		Boiler.h
 	$(CC) -o main_HeatPump.o -c main_HeatPump.cpp $(CFLAGS)
 
 .PHONY: clean

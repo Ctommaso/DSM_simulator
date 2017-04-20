@@ -45,14 +45,14 @@ Neighborhood::Neighborhood(int NUM_HOUSES, std::pair<double, double> THERMIC_CAP
 
 //Constructor from file
 //Generates a neighborhood by reading a file where each line describes the physical parameters of a house
-Neighborhood::Neighborhood(int NUM_HOUSES,string filename)
+Neighborhood::Neighborhood(int NUM_HOUSES, string filename, std::pair<double,double> BATTERY)
 {
 	num_houses=NUM_HOUSES;
 	int compteur(0);
 	ifstream infile;
 	infile.open(filename);
 
-	double t_ref,tinitiale,conductivity,capacity,windows,confort_interval,battery_capacity,battery_power;
+	double t_ref,tinitiale,conductivity,capacity,windows,confort_interval;
 	vector<double> Tinitiale;
 	bool Switch_initial;
 	
@@ -61,8 +61,9 @@ Neighborhood::Neighborhood(int NUM_HOUSES,string filename)
 	
 	while(true)
 	{
+		// Careful we are not loading the battery specs from file 
 		infile >> t_ref >> confort_interval >> conductivity >> capacity >> tinitiale >> Switch_initial
-		       >> windows >> battery_capacity >> battery_power;
+		       >> windows;
 		if(infile.eof()) break;
 		Tinitiale.push_back(tinitiale);
 		if(Switch_initial){Ptot_HP+=conductivity*30.0;}
@@ -70,7 +71,7 @@ Neighborhood::Neighborhood(int NUM_HOUSES,string filename)
 		houses.push_back(h);
 		
 		// All batteries are the same, consturctor: SoC = 0 and initial state = 0
-		Battery b(battery_capacity, battery_power);
+		Battery b(BATTERY.first,BATTERY.second);// Capacity Wh, Power W
 		batteries.push_back(b);
 		
 		compteur++;
@@ -90,8 +91,9 @@ void Neighborhood::Save_state(string filename)
 	{
 		file<<houses[i].get_Tref()<<" "<<houses[i].get_ConfortInterval()<<" "
 		    <<houses[i].get_Th_Cond()<<" "<<houses[i].get_Th_Capacity()<<" "
-		    <<T.getComposante(i)<<" "<<houses[i].HP_on()<<" "<<houses[i].get_Window_Surf()<<" "
-		    <<batteries[i].get_capacity()<<" "<<batteries[i].get_power()<<endl;
+		    <<T.getComposante(i)<<" "<<houses[i].HP_on()<<" "<<houses[i].get_Window_Surf()<<endl;
+		    //Not saving to file the battery data
+		    //<<" "<<batteries[i].get_capacity()<<" "<<batteries[i].get_power()<<endl;
 	}
 	file.close();
 }

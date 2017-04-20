@@ -48,7 +48,6 @@ double Opt_consumption(double E_estimated, int step, int horizon, const Array & 
 	return (sum+E_estimated/COP)/horizon-Residual_load.getComposante(step);	
 }
 
-
 //**********************************************************************
 // Thermostatic regulation of Heat pumps
 // They are turned on (resp. off) if T<Tref+Delta (resp. T>Tref+Delta)
@@ -312,3 +311,87 @@ void update_hp_switch(Neighborhood & n, double Ei, double time, double COP, bool
 		}
 	}
 }
+
+//**********************************************************************
+// Thermostatic regulation of Boilers
+// They are turned on (resp. off) if T<Tref+Delta (resp. T>Tref+Delta)
+void update_boiler_switch_Thermostat(vector<Boiler> & B)
+{
+	double T(0), Tref(0), Delta(0);
+	for(unsigned int i(0);i<B.size();i++){
+		T=B[i].get_T();
+		Tref=B[i].get_Tref();
+		Delta=B[i].get_ConfortInterval();
+		if(T<Tref-Delta){
+			B[i].setSwitch(true); // turns on the boiler
+		}else if(T>Tref+Delta){
+			B[i].setSwitch(false); // turns off the boiler
+		}
+	}
+}
+
+//**********************************************************************
+// Smart boiler regulation based, switch on time based on probability distribution
+void update_boiler_switch_smart(vector<Boiler> & B, int step)
+{
+	double T(0), Tref(0), Delta(0);
+	double Tmax(0),Tmin(0);
+	int minute(step%1440);
+	
+	for(unsigned int i(0);i<B.size();i++){
+		T=B[i].get_T();
+		Tref=B[i].get_Tref();
+		Delta=B[i].get_ConfortInterval();
+		
+		//T_MAX
+		if((0 <= minute && minute <7*60) || (B[i].get_switch_time() <= minute && minute <=24*60)){
+			Tmax=Tref+Delta;
+			
+		}
+		if((7*60 <= minute && minute < B[i].get_switch_time())){
+			Tmax=Tref-1.5*Delta;
+		}
+		
+		//T_MIN
+		if(0 <= minute && minute < 5.5*60){
+			Tmin=Tref+(2.0/3.0)*Delta;
+		}
+		if((B[i].get_switch_time() <= minute && minute <=24*60)){
+			Tmin=Tref-Delta+Delta*(5.0/3.0)*(minute-(B[i].get_switch_time()))/(1440-(B[i].get_switch_time()));
+		}
+		if(5.5*60 <= minute && minute < B[i].get_switch_time()){
+			Tmin=Tref-2.5*Delta;
+		}
+
+		if(T<Tmin){
+			B[i].setSwitch(true); // turns on the boiler
+		}else if(T>Tmax){
+			B[i].setSwitch(false); // turns off the boiler
+		}
+	}
+}
+
+//**********************************************************************
+// Generate probability distribution of switching on times based on PV profile
+Array Generate_prob(const Weather & w, int time)
+{
+	double sum(0);
+	double net(0);
+	vector <double> cumulative_dist(24*60,0.0);
+	for(unsigned int i(0);i<cumulative_dist.size();i++)
+	{
+		net=w.get_Rad40(time+i);
+		if(net<0)
+		{
+			net=0;
+		}
+		sum+=net;
+		cumulative_dist[i]=sum;	
+	}
+	Array Cumulative_Dist(cumulative_dist.size(),cumulative_dist);
+	
+	Cumulative_Dist=(1.0/sum)*Cumulative_Dist;
+	return Cumulative_Dist;
+}
+
+

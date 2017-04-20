@@ -29,6 +29,21 @@ void Euler(Neighborhood & n, int starting_day, int step, double deltat, double E
 	n.ComputePtot_Batteries();// update the total electric power consumption of Batteries
 }
 
+//**********************************************************************
+// Boiler Euler time integration step T_i+1 = T_i + Delta_t * (dT_i/dt)
+void Euler(vector<Boiler> & B, int step, double deltat, bool smart, const vector <Array> & Water_cons)
+{
+	
+	for(unsigned int i(0);i<B.size();i++){
+		B[i].set_T( B[i].get_T() + deltat*rhs_b(B[i],step,Water_cons[i]) ); // Euler update
+	}
+	if(smart){
+		update_boiler_switch_smart(B,step);// updates the boiler switches:smart
+	}else{
+		update_boiler_switch_Thermostat(B);// updates the boiler switches:thermostat
+	}	
+}
+
 //*****************************************************************************
 // Evaluation of dT/dt (thermal power equation for buildings)
 Array rhs(const Array & T, const vector< House > & houses, int step, const Weather & w) 
@@ -55,4 +70,16 @@ Array rhs(const Array & T, const vector< House > & houses, int step, const Weath
 
 	Array Sol(hp_num,sol);
 	return Sol;
+}
+
+//*****************************************************************************
+// Evaluation of dT/dt (thermal power equation for boilers)
+double rhs_b(const Boiler & B, int step, const Array & Water_cons) // Heat flow equation for boilers
+{
+	double Heating_pow(0.0);
+	double T_house(20); // set the temperature of the house to 20 °C
+	if(B.on()){
+		Heating_pow=B.get_Heating_Power();
+	}
+	return (Water_cons.getComposante(step)*(B.get_Tcold()-B.get_T()) + (Heating_pow+B.get_Th_Cond()*(T_house-B.get_T()))/B.get_Th_Capacity())/B.get_Volume();
 }

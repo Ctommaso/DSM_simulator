@@ -3,7 +3,6 @@
 #include <cmath>
 #include <chrono>
 #include <functional>
-#include <stdio.h>
 #include <random>
 #include "AutoQuar_Classes/Array.h"
 #include "AutoQuar_Classes/House.h"
@@ -51,18 +50,19 @@ int main()
 // *********************************************************************
 void init_neighborhood(Neighborhood & n, int house_num, bool load_neighborhood, double Av_window_S, double battery_capacity, double battery_power)
 {	
+	std::pair<double, double> BATTERY(1000*battery_capacity,1000*battery_power); // Pair to describe battery (capacity, power)[Wh, W]
 	string fn("Neighborhood.dat");
+	
 	if(load_neighborhood==true)
 	{
 		cout << "YO NO NEED TO INVENT ONE"<<endl;
-		n = Neighborhood(house_num, fn); //Load neighborhood from existing file
+		n = Neighborhood(house_num, fn, BATTERY); //Load neighborhood from existing file
 	}else{
 		std::pair<double, double> TH_CAPACITY(13000,27000); // Thermal Capacity interval [Wh/°K] corresponding to [50-100] MJ/°K 13000,27000
 		std::pair<double, double> TH_COND(150,300); // Thermal Conductivity interval [W/°C]
 		std::pair<double, double> REF_T(21,23);// Comfort Temperature
 		std::pair<double, double> CONFORT_INTERVAL(1.5,1.5);// Comfort Interval
-		std::pair<double, double> WINDOWS(Av_window_S-5,Av_window_S+5); // South oriented window surface
-		std::pair<double, double> BATTERY(1000*battery_capacity,1000*battery_power); // Pair to describe battery (capacity, power)[Wh, W]
+		std::pair<double, double> WINDOWS(Av_window_S-5,Av_window_S+5); // South oriented window surface		
 		
 		//Neighborhood constructor, based on uniform distribution
 		n = Neighborhood(house_num, TH_CAPACITY, TH_COND, REF_T, CONFORT_INTERVAL, WINDOWS, BATTERY); 

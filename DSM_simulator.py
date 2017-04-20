@@ -3,6 +3,7 @@ import tkFileDialog
 from PIL import Image
 import os
 import shutil
+import ntpath
 import numpy as np
 import sys
 import platform
@@ -26,6 +27,7 @@ class Simulator(object):
 		self.num_days = 0
 		self.PV_surface = 0
 		self.neighborhood_fn = None
+		self.boiler_fn = None
 		self.old_neighborhood_data = False
 		
 		self.PV_peak_power = StringVar()
@@ -229,12 +231,15 @@ class Simulator(object):
 		
 		self.entry_nodes.config(state='normal')
 		self.neighborhood_fn = tkFileDialog.askopenfilename(filetypes = [('all files', '.*'), ('text files', '.txt')], title = 'Load neighborhood')
+		head, tail = ntpath.split(self.neighborhood_fn)
+		
 		new_text = str(len(np.loadtxt(self.neighborhood_fn)))
+		self.boiler_fn = ntpath.dirname(head) + "/Boiler_data/Boiler_settings_"+str(new_text)+".dat"
+		
 		self.old_neighborhood_data = True
 		self.entry_nodes.insert(0,new_text)
 		self.entry_nodes.delete(len(new_text),END)
 		self.entry_nodes.config(state='disabled')
-		print self.neighborhood_fn
 		
 	#Function to run the simulation
 	def run(self):
@@ -275,7 +280,6 @@ class Simulator(object):
 		os.chdir(results_path)
 		
 		if self.old_neighborhood_data:
-			print os.getcwd()
 			shutil.copyfile(self.neighborhood_fn,os.getcwd()+"/Neighborhood.dat")
 		
 		# Saves the timeseries used in the simulation 
@@ -300,15 +304,12 @@ class Simulator(object):
 		if self.simulate_boilers==True:
 			np.savetxt("Hot_water.dat",np.transpose(self.Hot_water),fmt='%.2f')
 			shutil.copy("../src/Boilers.exe",os.getcwd())
+			if self.old_neighborhood_data==True:
+				shutil.copyfile(self.boiler_fn,os.getcwd()+"/Boiler_settings.dat")
 			self.message.set("STATUS: Simulating smart boilers")
 			self.master.update_idletasks()
-			Input_file_Boilers(self.num_nodes, self.start_day, self.num_days, 1)
-			os.system (prefix+"Boilers.exe < Input_Boilers.txt")
-			os.remove("Input_Boilers.txt")
-			self.message.set("STATUS: Simulating boilers")
-			self.master.update_idletasks()
-			Input_file_Boilers(self.num_nodes, self.start_day, self.num_days, 0)
-			os.system (prefix+"Boilers.exe < Input_Boilers.txt")
+			Input_file_Boilers(self.num_nodes, self.start_day, self.num_days, self.old_neighborhood_data)
+			os.system(prefix+"Boilers.exe < Input_Boilers.txt")
 			os.remove("Boilers.exe")
 			np.savetxt("Residual_load_boilers.dat",self.Residual_load+np.loadtxt("Res_Boiler_Control.dat")[:,-1])
 		
@@ -397,7 +398,6 @@ class Simulator(object):
 		else:
 			print "Simulation data not available"
 	
-	
 	#Function to plot the network load
 	def plot_network_load(self):
 		if self.simulation_over:
@@ -458,12 +458,15 @@ def Input_file_Heat_Pumps(num_houses,starting_day,num_days,window_surf,battery_c
 	f.close()
 	
 # Creates the input file for the Boilers c++ executable 
-def Input_file_Boilers(num_houses,starting_day,num_days,algorithm):
+def Input_file_Boilers(num_houses,starting_day,num_days,old_neighborhood_data):
 	f=open("Input_Boilers.txt",'w')
 	f.write(str(num_houses) +'\n')
 	f.write(str(starting_day) +'\n')
 	f.write(str(num_days) +'\n')
-	f.write(str(algorithm) +'\n')
+	if old_neighborhood_data==False:
+		f.write("0" +'\n')
+	else:
+		f.write("1" +'\n')
 	f.write("Hot_water.dat" +'\n')
 	f.write("T.dat" +'\n')
 	f.write("R90.dat" +'\n')

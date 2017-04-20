@@ -18,7 +18,7 @@ class Neighborhood{
     Neighborhood(int NUM_HOUSES, std::pair<double, double> THERMIC_CAP, std::pair<double, double> THERMIC_COND, 
                                  std::pair<double, double> REF_T, std::pair<double, double> CONFORT_INTERVAL, 
                                  std::pair<double,double> WINDOWS, std::pair<double,double> BATTERY); // Constructor from parameters
-    Neighborhood(int NUM_HOUSES, string filename); //Constructor based on data FILE
+    Neighborhood(int NUM_HOUSES, string filename, std::pair<double,double> BATTERY); //Constructor based on data FILE
 	Neighborhood() = default; //Default constructor
 	
 	void Save_state(string filename); //Saves Nieghborhood to file
