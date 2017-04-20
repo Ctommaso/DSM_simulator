@@ -15,13 +15,11 @@ Compile the c++ executables:
 - Compile using the command lines below
 
 Command lines to compile are: 
-	make -f Makefile_Boiler
-	make -f Makefile_HeatPump
+	make Makefile
 
 Command lines to clean up are: 
-	make -f Makefile_Boiler clean
-	make -f Makefile_HeatPump clean
-
+	make -f Makefile clean
+	
 
 To run the code:
 - Open a terminal
