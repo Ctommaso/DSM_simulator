@@ -333,6 +333,7 @@ class Simulator(object):
 		os.chdir("../")
 		self.simulation_over=True
 		
+
 	#Function to free the memory
 	def clean_up(self):
 		
