@@ -15,7 +15,7 @@ Compile the c++ executables:
 - Compile using the command lines below
 
 Command lines to compile are: 
-	make Makefile
+	make -f Makefile
 
 Command lines to clean up are: 
 	make -f Makefile clean

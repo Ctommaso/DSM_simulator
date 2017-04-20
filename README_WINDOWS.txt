@@ -47,7 +47,7 @@ Compile the c++ exes:
 	Open a terminal: click on the magnifying glass (or windows symbol)
 	write cmd then <enter>
 	write cd "<location autoquar>\src" 
-	run "mingw32-make Makefile"
+	run "mingw32-make -f Makefile_w"
 
 Run AutoQuar.py:
 	double-click on AutoQuar.py
