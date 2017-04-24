@@ -29,7 +29,7 @@ class Boiler{
 	void setSwitch(bool a); 
 	bool on() const {return Switch;};
 	
-	void set_switch_time(Array Cumulative_Prob_dist);
+	void set_switch_time(double prob, Array Cumulative_Prob_dist);
 	int get_switch_time() const {return switch_time;};
 	double Heating_power();
 	

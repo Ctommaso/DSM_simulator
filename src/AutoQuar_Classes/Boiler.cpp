@@ -41,16 +41,13 @@ double Boiler::Heating_power()
 }
 
 // This function sets the switching time of the boiler given a probability distribution
-void Boiler::set_switch_time(Array Cumulative_Prob_dist)
+void Boiler::set_switch_time(double prob, Array Cumulative_Prob_dist)
 {
-	std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0,1);
-	double prob(dis(gen));
 	int i(0);
 	while(prob > Cumulative_Prob_dist.getComposante(i))
 	{
 		i++;
 	}
 	switch_time=i;
+	cout<<"prob"<<prob<<" switch_time"<<switch_time<<endl;
 }

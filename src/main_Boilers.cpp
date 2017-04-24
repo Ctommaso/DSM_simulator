@@ -48,6 +48,12 @@ void run_simulation(unsigned int num_days, unsigned int starting_day, vector<Boi
 	double deltat(1.0/60.0),tot_consumption(0); // Pas temporel = 1minute =1/60 h,
 	Array Cumulative_Prob(24*60);
 
+	// Initialization of the random number generator for defining switch times
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<double> dis(0,1);
+	double prob(0);
+	
 	ofstream Results(Res_fn,ios::binary | ios::out);//Creates file to store the results
 	for(unsigned int step(0);step<60*24*(num_days);step++){//60*24*num_days 60*24*(num_days-1)	
 		if(step%(24*60)==0){
@@ -56,7 +62,8 @@ void run_simulation(unsigned int num_days, unsigned int starting_day, vector<Boi
 			if(smart){
 				Cumulative_Prob=Generate_prob(w,step);
 				for(unsigned int i(0);i<B.size();i++){
-					B[i].set_switch_time(Cumulative_Prob);
+					prob=dis(gen);
+					B[i].set_switch_time(prob, Cumulative_Prob);
 				}
 			}
 		}
