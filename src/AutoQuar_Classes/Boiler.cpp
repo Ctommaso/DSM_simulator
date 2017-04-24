@@ -49,5 +49,5 @@ void Boiler::set_switch_time(double prob, Array Cumulative_Prob_dist)
 		i++;
 	}
 	switch_time=i;
-	cout<<"prob"<<prob<<" switch_time"<<switch_time<<endl;
+	//cout<<"prob"<<prob<<" switch_time"<<switch_time<<endl;
 }
