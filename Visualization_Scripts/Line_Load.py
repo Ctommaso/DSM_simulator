@@ -15,8 +15,6 @@ def click(event,X,Y,Descendants_ids,Load_T,Load_C,Load_C_B,start_day,num_days,ti
 		node = np.nanargmin((X-x)**2+(Y-y)**2)
 		plt.plot(X[node],Y[node],'rs')
 		plt.draw()
-		print "THIS IS A TEST ", Load_T[:,node]
-		print "THIS IS A TEST ", np.amax(Load_T[:,node]), np.amin(Load_T[:,node])
 		
 		load_C_B,Mean_C_B,Std_C_B=Tree.Line_load(Descendants_ids,Load_C_B,node)
 		load_C,Mean_C,Std_C=Tree.Line_load(Descendants_ids,Load_C,node)
