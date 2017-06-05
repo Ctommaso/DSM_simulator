@@ -157,13 +157,13 @@ def Tree_statistics(N,Adj,Levels,Num_of_children):
 	return np.array(Descendants), Descendants_ids
 
 def Line_load(Descendants_ids,time_series,node):
-		
+	
 	# In a tree network there are as many lines as there are nodes,
 	# To each node we thus associate the load on the line above it
 	# which is given by the sum of the load on the node considered + the load of all its descendants! 
-	load=np.copy(time_series[:,node])
+	load = np.copy(time_series[:,node])
 	for j in range(0,len(Descendants_ids[node])):
-		load+=time_series[:,Descendants_ids[node][j]]
+		load += time_series[:,Descendants_ids[node][j]]
 	
 	num_days=len(load)/1440
 	Mean,Std=[],[]

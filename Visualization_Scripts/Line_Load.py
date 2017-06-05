@@ -12,9 +12,11 @@ def click(event,X,Y,Descendants_ids,Load_T,Load_C,Load_C_B,start_day,num_days,ti
 	tb = pylab.get_current_fig_manager().toolbar
 	if event.button==1 and event.inaxes and tb.mode == '':
 		x,y = event.xdata,event.ydata
-		node=np.nanargmin((X-x)**2+(Y-y)**2)
+		node = np.nanargmin((X-x)**2+(Y-y)**2)
 		plt.plot(X[node],Y[node],'rs')
 		plt.draw()
+		print "THIS IS A TEST ", Load_T[:,node]
+		print "THIS IS A TEST ", np.amax(Load_T[:,node]), np.amin(Load_T[:,node])
 		
 		load_C_B,Mean_C_B,Std_C_B=Tree.Line_load(Descendants_ids,Load_C_B,node)
 		load_C,Mean_C,Std_C=Tree.Line_load(Descendants_ids,Load_C,node)
@@ -97,6 +99,13 @@ def plot_line_load(num_nodes,start_day,num_days,R40,Domestic_appliances,pv_effic
 		Load_C_B=(power_hp_smart_B + Domestic_appliances - power_pv)*1e-03 #[kW] load control + batteries
 		
 	### PLOTTING THE NETWORK ###
+	# Add one additional slack node to plot the network...
+	num_nodes += 1
+	# Append row of zeros for the slack bus additional node!
+	Load_T = np.concatenate((np.zeros((24*60*num_days,1)), Load_T),axis=1)
+	Load_C = np.concatenate((np.zeros((24*60*num_days,1)), Load_C),axis=1)
+	Load_C_B = np.concatenate((np.zeros((24*60*num_days,1)), Load_C_B),axis=1)
+	
 	initial_dir=os.getcwd()
 	tree_dir="Visualization_Scripts/Tree_network"
 	fn=tree_dir+"/Tree_N="+str(num_nodes)
@@ -110,7 +119,7 @@ def plot_line_load(num_nodes,start_day,num_days,R40,Domestic_appliances,pv_effic
 		Descendants, Descendants_ids = Tree.Tree_statistics(num_nodes,Adj,Levels,Num_of_children)
 		Tree.Save_tree(num_nodes,Adj,Levels,Num_of_children,Descendants,Descendants_ids,"Tree_N="+str(num_nodes))
 		os.chdir(initial_dir)
-		
+	
 	fig, [X,Y] = Tree.Plot_tree(num_nodes,Adj,Levels,Num_of_children)
 	fig.canvas.mpl_connect('button_press_event', lambda event: click(event, X, Y, Descendants_ids, Load_T, Load_C, Load_C_B,start_day,num_days,time,pv_surf))
 

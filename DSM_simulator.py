@@ -332,7 +332,7 @@ class Simulator(object):
 		self.master.update_idletasks()
 		os.chdir("../")
 		self.simulation_over=True
-		
+		print "Here I am at the end ", os.getcwd()
 
 	#Function to free the memory
 	def clean_up(self):
