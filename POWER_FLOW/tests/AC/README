@@ -1,0 +1,12 @@
+The file solved_matpower_cases.txt contains the list of Slack Active Powers
+computed with MATPOWER for the following testcases:
+
+"case14.m"
+"case57.m"
+"case89pegase.m"
+"case118.m"
+"case300.m"
+"case1354pegase.m"
+"case2869pegase.m"
+"case9241pegase.m"
+"case13659pegase.m"
