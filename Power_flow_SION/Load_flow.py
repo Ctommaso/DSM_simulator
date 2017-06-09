@@ -126,7 +126,7 @@ def main():
 	g = Electrical_network(busses, lines, S_BASE)
 	num_busses = len(g.busses)
 	
-	fn = "Load_C_B"
+	fn = "Load_C"
 	# Load active power timeseries
 	P_data = np.load(fn+str(".npy"))
 	# Added slack column
@@ -187,7 +187,7 @@ def main():
 	# Dynamic plot
 	fig.canvas.mpl_connect('button_press_event',lambda event: click(event, ax1, ax2, ax3, coord, V, P_data, descendants_ids))
 	fig.canvas.mpl_connect('key_press_event', lambda event: onkey(event, ax1, ax2, ax3))
-	fig.suptitle("Control + Batt", fontsize=25)
+	fig.suptitle("Control", fontsize=25)
 	mng = plt.get_current_fig_manager()
 	mng.resize(*mng.window.maxsize())
 	plt.show()
