@@ -9,12 +9,14 @@ import sys
 import platform
 import gc
 from src.behavsim.behavsim_kernel import run_behavsim
+from src.power_flow.DSM_power_flow import *
 from Visualization_Scripts.Aggregated_Load import plot_aggregated_load
 from Visualization_Scripts.Battery_Usage import plot_battery_usage
 from Visualization_Scripts.Self_Consumption import plot_self_consumption
 from Visualization_Scripts.Line_Load import plot_line_load
 from Visualization_Scripts.Switch_counts import plot_switch_counts
 from Visualization_Scripts.Boiler_Consumption import plot_boilers
+
 
 class Simulator(object):
 	# DEFINE SIMULATOR
@@ -32,8 +34,8 @@ class Simulator(object):
 		
 		self.PV_peak_power = StringVar()
 		self.PV_peak_power.set("")
-		self.PV_efficiency=0.18
-		self.average_window_surf=10
+		self.PV_efficiency = 0.18
+		self.average_window_surf = 10
 		self.R90 = None
 		self.R40 = None
 		self.T = None
@@ -52,42 +54,42 @@ class Simulator(object):
 		self.battery_capacity = 0
 		self.battery_power = 0
 
-		self.simulation_over=False
+		self.simulation_over = False
 		self.message=StringVar()
 		self.message.set("STATUS: Enter simulation parameters")
 		
 		self.master.protocol("WM_DELETE_WINDOW", self.on_closing)
 		
 		# Icons
-		houses_image = PhotoImage(file='icons/houses60x60.gif')
-		start_day_image = PhotoImage(file='icons/start_day60x60.gif')
-		num_days_image = PhotoImage(file='icons/num_days60x60.gif')
-		PV_image = PhotoImage(file='icons/PV60x60.gif')
-		city_image = PhotoImage(file='icons/city60x60.gif')
-		boiler_image = PhotoImage(file='icons/hot60x60.gif')
-		washer_image = PhotoImage(file='icons/laundry-service60x60.gif')
-		battery_cap_image = PhotoImage(file='icons/battery_capacity60x60.gif')
-		battery_pow_image = PhotoImage(file='icons/battery_power60x60.gif')
+		houses_image = PhotoImage(file = 'icons/houses60x60.gif')
+		start_day_image = PhotoImage(file = 'icons/start_day60x60.gif')
+		num_days_image = PhotoImage(file = 'icons/num_days60x60.gif')
+		PV_image = PhotoImage(file = 'icons/PV60x60.gif')
+		city_image = PhotoImage(file = 'icons/city60x60.gif')
+		boiler_image = PhotoImage(file = 'icons/hot60x60.gif')
+		washer_image = PhotoImage(file = 'icons/laundry-service60x60.gif')
+		battery_cap_image = PhotoImage(file = 'icons/battery_capacity60x60.gif')
+		battery_pow_image = PhotoImage(file = 'icons/battery_power60x60.gif')
 		
 		# Labels
 		self.label_message = Label(master, textvariable=self.message,height=1,font=("Helvetica", 15),fg='red',bg='white')
 		self.label_nodes = Label(master, text="Number of Houses:",image=houses_image,font=("Helvetica", 12),fg='black',bg='white',compound = 'left')
-		self.label_nodes.photo=houses_image
+		self.label_nodes.photo = houses_image
 		self.label_start_day = Label(master, text="Starting day:",image=start_day_image,font=("Helvetica", 12),fg='black',bg='white',compound= 'left')
-		self.label_start_day.photo=start_day_image
+		self.label_start_day.photo = start_day_image
 		self.label_num_days = Label(master, text="Number of days:",image=num_days_image,font=("Helvetica", 12),fg='black',bg='white',compound = 'left')
-		self.label_num_days.photo=num_days_image
+		self.label_num_days.photo = num_days_image
 		self.label_PV = Label(master, text="PV surface/house [m2]:",image=PV_image,font=("Helvetica", 12),fg='black',bg='white',compound = 'left')
-		self.label_PV.photo=PV_image
+		self.label_PV.photo = PV_image
 		self.label_PV_peak_power = Label(master, textvariable=self.PV_peak_power,font=("Helvetica", 12),fg='black',bg='white',compound = 'left')
 		self.label_city = Label(master, text="City:",image=city_image,font=("Helvetica", 12),fg='black',bg='white',compound = 'left')
-		self.label_city.photo=city_image
+		self.label_city.photo = city_image
 		self.label_boilers = Label(master, text="Electric boilers:",image=boiler_image,font=("Helvetica", 12),fg='black',bg='white',compound = 'left')
-		self.label_boilers.photo=boiler_image
+		self.label_boilers.photo = boiler_image
 		self.label_washers = Label(master, text="Smart washers:",image=washer_image,font=("Helvetica", 12),fg='black',bg='white',compound = 'left')
-		self.label_washers.photo=washer_image
+		self.label_washers.photo = washer_image
 		self.label_battery_capacity = Label(master, text="Battery Capacity [kWh]:",image=battery_cap_image,font=("Helvetica", 12),fg='black',bg='white',compound= 'left')
-		self.label_battery_capacity.photo=battery_cap_image
+		self.label_battery_capacity.photo = battery_cap_image
 		self.label_battery_power = Label(master, text="Battery Power [kW]:",image=battery_pow_image,font=("Helvetica", 12),fg='black',bg='white',compound= 'left')
 		self.label_battery_power.photo=battery_pow_image
 		
@@ -115,6 +117,7 @@ class Simulator(object):
 		self.switches_button = Button(master, text="Plot Switching Rate", command=self.plot_switch_counts,font=("Helvetica", 12),bg='white',fg='black')
 		self.boiler_button = Button(master, text="Plot Boiler Details", command=self.plot_boilers,font=("Helvetica", 12),bg='white',fg='black')
 		self.network_load_button = Button(master, text="Plot Network Load", command=self.plot_network_load,font=("Helvetica", 12),bg='white',fg='black')
+		self.power_flow_button = Button(master, text="Run power flow", command=self.run_power_flow,font=("Helvetica", 12),bg='white',fg='black')
 
 		# Layout
 		self.master.title("Simulator AUTOQUAR")
@@ -149,6 +152,7 @@ class Simulator(object):
 		self.switches_button.grid(row=14, column=0,sticky=W+E)
 		self.boiler_button.grid(row=14, column=1,sticky=W+E)
 		self.network_load_button.grid(row=14, column=2,sticky=W+E)
+		self.power_flow_button.grid(row=15, column=1,sticky=W+E)
 							
 	#Function to validate the entries
 	def validate(self,new_text,entry_type):
@@ -353,8 +357,6 @@ class Simulator(object):
 		self.Residual_load=None
 		self.Hot_water=None
 		
-		#tracker.print_diff()
-		
 	#Function to free the memory on closing
 	def on_closing(self):
 		self.clean_up()
@@ -433,7 +435,31 @@ class Simulator(object):
 			self.master.update_idletasks()
 		else:
 			print "Simulation data not available"
-
+	
+	#Function to perform the power flow calculation and plot the results
+	def run_power_flow(self):
+		if self.simulation_over:
+			self.message.set("STATUS: Running load flow")
+			self.master.update_idletasks()
+			load_T, load_C, load_C_B = prepare_load_flow_data(self.num_nodes,self.start_day,self.num_days,
+			                       self.R40,self.Domestic_appliances,self.PV_efficiency,
+			                       self.PV_surface,self.city.get(),self.simulate_boilers)
+			
+			v_T, v_C, v_C_B = DSM_power_flow("case100.m", load_T, load_C, load_C_B)
+			V = [v_T, v_C, v_C_B]
+			load = [load_T, load_C, load_C_B]
+			for n, v in enumerate(V): 
+				print "ciao"
+				#Plot_voltages(v,Load[n])
+			
+			self.message.set("STATUS: Plotting data")
+			self.master.update_idletasks()
+			
+			self.message.set("STATUS: Done plotting")
+			self.master.update_idletasks()
+		else:
+			print "Simulation data not available"
+	
 # Creates the input file for the Heat Pump c++ executable 
 def Input_file_Heat_Pumps(num_houses,starting_day,num_days,window_surf,battery_capacity,battery_power,pv_surface,pv_efficiency,simulate_boilers,loaded_neighborhood):
 	f=open("Input_Heat_Pump.txt",'w')
