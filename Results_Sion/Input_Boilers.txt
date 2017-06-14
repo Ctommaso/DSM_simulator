@@ -1,6 +1,6 @@
 99
-10
-5
+200
+3
 0
 Hot_water.dat
 T.dat

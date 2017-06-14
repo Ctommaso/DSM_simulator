@@ -1,8 +1,0 @@
-99
-30
-5
-0
-Hot_water.dat
-T.dat
-R90.dat
-R40.dat

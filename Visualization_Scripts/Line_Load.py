@@ -118,7 +118,9 @@ def plot_line_load(num_nodes,start_day,num_days,R40,Domestic_appliances,pv_effic
 		Tree.Save_tree(num_nodes,Adj,Levels,Num_of_children,Descendants,Descendants_ids,"Tree_N="+str(num_nodes))
 		os.chdir(initial_dir)
 	
-	fig, [X,Y] = Tree.Plot_tree(num_nodes,Adj,Levels,Num_of_children)
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	[X,Y] = Tree.Plot_tree(fig, ax,num_nodes, Adj, Levels, Num_of_children)
 	fig.canvas.mpl_connect('button_press_event', lambda event: click(event, X, Y, Descendants_ids, Load_T, Load_C, Load_C_B,start_day,num_days,time,pv_surf))
 
 	if not standalone:

@@ -57,9 +57,7 @@ def generate_tree(N):
 	
 	return Adj,levels,num_of_children
 	
-def Plot_tree(N,Adj,Levels,Num_of_children):
-	fig=plt.figure()
-	ax = fig.add_subplot(111)
+def Plot_tree(fig, ax, N, Adj, Levels, Num_of_children):
 	
 	### PLOT NODES ###
 	Y=[]
@@ -96,7 +94,7 @@ def Plot_tree(N,Adj,Levels,Num_of_children):
 	fig.suptitle(str(N)+' Nodes', fontsize=30)
 	ax.tick_params(axis='both', which='both', bottom='off', top='off', left='off', right='off', labelleft='off', labelbottom='off')
 	ax.set_xlim(min(X)-0.05,max(X)+0.05)
-	return fig ,[X,Y]
+	return [X,Y]
 	
 def Tree_statistics(N,Adj,Levels,Num_of_children):
 	
@@ -192,7 +190,10 @@ def main():
 	
 	num_nodes=int(sys.argv[1])
 	Adj, Levels, Num_of_children = generate_tree(num_nodes)
-	Plot_tree(num_nodes,Adj,Levels,Num_of_children)
+	
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	Plot_tree(fig, ax, num_nodes,Adj,Levels,Num_of_children)
 	Descendants, Descendants_ids = Tree_statistics(num_nodes,Adj,Levels,Num_of_children)
 	print "LEVELS",Levels
 	print "Num_of Children",Num_of_children

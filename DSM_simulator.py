@@ -16,6 +16,7 @@ from Visualization_Scripts.Self_Consumption import plot_self_consumption
 from Visualization_Scripts.Line_Load import plot_line_load
 from Visualization_Scripts.Switch_counts import plot_switch_counts
 from Visualization_Scripts.Boiler_Consumption import plot_boilers
+from Visualization_Scripts.Voltages import plot_voltages
 
 
 class Simulator(object):
@@ -446,14 +447,11 @@ class Simulator(object):
 			                       self.PV_surface,self.city.get(),self.simulate_boilers)
 			
 			v_T, v_C, v_C_B = DSM_power_flow("case100.m", load_T, load_C, load_C_B)
-			V = [v_T, v_C, v_C_B]
-			load = [load_T, load_C, load_C_B]
-			for n, v in enumerate(V): 
-				print "ciao"
-				#Plot_voltages(v,Load[n])
 			
 			self.message.set("STATUS: Plotting data")
 			self.master.update_idletasks()
+			
+			plot_voltages(v_T, v_C, v_C_B, load_T, load_C, load_C_B)
 			
 			self.message.set("STATUS: Done plotting")
 			self.master.update_idletasks()
