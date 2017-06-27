@@ -33,9 +33,10 @@ def DSM_power_flow(graph_fn, p_T, p_C, p_C_B):
 	num_busses = len(g.busses)
 	
 	P_data = [p_T, p_C, p_C_B]
+	Pflow_name = ["thermostat", "control", "control + batt"]
 	V = []
-	for p_data in P_data:
-		print "running power flow"
+	for n, p_data in enumerate(P_data):
+		print "running power flow", Pflow_name[n]
 		
 		# Power factor for reactive power conversion: cos(phi)=0.97
 		power_factor = 0.25

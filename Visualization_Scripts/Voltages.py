@@ -69,8 +69,8 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 
 	# Load tree
 	num_busses = len(V_T[0])
-	tree_dir="Visualization_Scripts/Tree_network"
-	fn=tree_dir+"/Tree_N="+str(num_busses)
+	tree_dir = "Visualization_Scripts/Tree_network"
+	fn = tree_dir+"/Tree_N="+str(num_busses)
 	adj, num_of_children, levels, descendants, descendants_ids = Load_tree_data(num_busses,fn)
 		
 	for n, V in enumerate(Voltages):
@@ -92,8 +92,8 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 		ax3.set_ylabel(r"$P_{\rm el}$"+" "+r"$[{\rm kW}]$", fontsize=30)			
 		ax3.set_xlabel(r"Day", fontsize=25)
 
-		ax2.tick_params(axis='both', which='major',pad=10, labelsize=20)
-		ax3.tick_params(axis='both', which='major',pad=10, labelsize=20)
+		ax2.tick_params(axis = 'both', which = 'major',pad=10, labelsize=20)
+		ax3.tick_params(axis = 'both', which = 'major',pad=10, labelsize=20)
 		positions = [1440*m for m in range(0,len(P_data[n])/1440)]
 		labels = [m for m in range(0,len(P_data[n])/1440)]
 		ax2.set_xticks(positions)

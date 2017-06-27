@@ -31,6 +31,7 @@ class Simulator(object):
 		self.PV_surface = 0
 		self.neighborhood_fn = None
 		self.boiler_fn = None
+		self.distribution_network_fn = None
 		self.old_neighborhood_data = False
 		
 		self.PV_peak_power = StringVar()
@@ -238,12 +239,14 @@ class Simulator(object):
 		self.neighborhood_fn = tkFileDialog.askopenfilename(filetypes = [('all files', '.*'), ('text files', '.txt')], title = 'Load neighborhood')
 		head, tail = ntpath.split(self.neighborhood_fn)
 		
-		new_text = str(len(np.loadtxt(self.neighborhood_fn)))
-		self.boiler_fn = ntpath.dirname(head) + "/Boiler_data/Boiler_settings_"+str(new_text)+".dat"
+		num_loads = len(np.loadtxt(self.neighborhood_fn))
+		
+		self.boiler_fn = ntpath.dirname(head) + "/Boiler_data/Boiler_settings_"+str(num_loads)+".dat"
+		self.distribution_network_fn = ntpath.dirname(head) + "/Distribution_network_data/case"+str(num_loads+1)+".txt"
 		
 		self.old_neighborhood_data = True
-		self.entry_nodes.insert(0,new_text)
-		self.entry_nodes.delete(len(new_text),END)
+		self.entry_nodes.insert(0,str(num_loads))
+		self.entry_nodes.delete(len(str(num_loads)),END)
 		self.entry_nodes.config(state='disabled')
 		
 	#Function to run the simulation
@@ -446,7 +449,7 @@ class Simulator(object):
 			                       self.R40,self.Domestic_appliances,self.PV_efficiency,
 			                       self.PV_surface,self.city.get(),self.simulate_boilers)
 			
-			v_T, v_C, v_C_B = DSM_power_flow("case100.m", load_T, load_C, load_C_B)
+			v_T, v_C, v_C_B = DSM_power_flow(self.distribution_network_fn, load_T, load_C, load_C_B)
 			
 			self.message.set("STATUS: Plotting data")
 			self.master.update_idletasks()
