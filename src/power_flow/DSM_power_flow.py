@@ -111,3 +111,47 @@ def prepare_load_flow_data(num_nodes, start_day, num_days, R40, Domestic_applian
 	Load_C_B = np.concatenate((np.zeros((len(Load_C_B),1)), Load_C_B), axis = 1)
 	
 	return Load_T, Load_C, Load_C_B
+
+
+def prepare_load_flow_network(num_nodes, Adj):
+
+	fn = "case"+str(num_nodes)+".txt"
+	edges = [[Adj[i,0]+1, Adj[i,1]+1] for i in range(0,len(Adj),2)]
+
+	file = open(fn,"w") 
+	 
+	file.write("%%-----  Power Flow Data  -----%%\n") 
+	file.write("%% system VA base\n") 
+	file.write("mpc.baseMVA = 1000 %[W], BaseV = 220[V], BaseR = V0^2/P0 = 48.4 [Ohm];\n") 
+
+	file.write("\n")
+
+	file.write("%% bus data\n") 
+	file.write("%	bus_i	type	Pd	Qd	Gs	Bs	area	Vm	Va	baseKV	zone	Vmax	Vmin\n") 
+	file.write("mpc.bus = [\n") 
+	for n in range(1, num_nodes+1):
+		bus_type = '3' if n == 1 else '1'
+		file.write("	"+str(n) + "	" + bus_type +"	0	0	0	0	1	1.0	0	0	1	1.06	0.94;\n")
+	file.write("];\n")
+
+	file.write("\n")
+
+	file.write("%% generator data\n") 
+	file.write("%	bus	Pg	Qg	Qmax	Qmin	Vg	mBase	status	Pmax	Pmin	Pc1	Pc2	Qc1min	Qc1max	Qc2min	Qc2max	ramp_agc	ramp_10	ramp_30	ramp_q	apf\n") 
+	file.write("mpc.gen = [\n") 
+	file.write("	1	0	0	0	0	1.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0;\n") 
+	file.write("];\n") 
+
+	file.write("\n")
+
+	# Per unit values of r and x (these are somehow arbitrary)
+	r, x = 1e-04, 1e-04
+
+	file.write("%% branch data\n") 
+	file.write("%	fbus	tbus	r	x	b	rateA	rateB	rateC	ratio	angle	status	angmin	angmax\n") 
+	file.write("mpc.branch = [\n") 
+	for e in edges:
+		file.write("	"+str(e[0]) +"	"+ str(e[1]) +"	"+ str(r)+ "	"+str(x)+"	0	0	0	0	0	0	1	-360	360;\n")
+	file.write("];\n") 
+
+	file.close()

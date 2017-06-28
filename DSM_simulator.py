@@ -17,7 +17,7 @@ from Visualization_Scripts.Line_Load import plot_line_load
 from Visualization_Scripts.Switch_counts import plot_switch_counts
 from Visualization_Scripts.Boiler_Consumption import plot_boilers
 from Visualization_Scripts.Voltages import plot_voltages
-
+import Visualization_Scripts.Generate_tree as Tree
 
 class Simulator(object):
 	# DEFINE SIMULATOR
@@ -453,6 +453,24 @@ class Simulator(object):
 			load_T, load_C, load_C_B = prepare_load_flow_data(self.num_nodes,self.start_day,self.num_days,
 			                       self.R40,self.Domestic_appliances,self.PV_efficiency,
 			                       self.PV_surface,self.city.get(),self.simulate_boilers)
+			
+			#Number of electrical busses: added the slack
+			num_busses = self.num_nodes+1
+			initial_dir = os.getcwd()
+			tree_dir = "Data/Distribution_network_data/"
+			fn = tree_dir+"Tree_N="+str(num_busses)
+			if os.path.exists(fn):
+				print "TREE ALREADY EXISTS -- I AM USING AN OLD ONE"
+			else: 
+				os.chdir(tree_dir)
+				print "TREE DOES NOT EXIST -- I AM CREATING ONE"
+				Adj, Levels, Num_of_children = Tree.generate_tree(num_busses)
+				Descendants, Descendants_ids = Tree.Tree_statistics(num_busses, Adj, Levels, Num_of_children)
+				Tree.Save_tree(num_busses, Adj, Levels, Num_of_children, Descendants,Descendants_ids, "Tree_N="+str(num_busses))
+				prepare_load_flow_network(num_busses, Adj)
+				os.chdir(initial_dir)
+		
+			self.distribution_network_fn = fn + "/case"+str(num_busses)+".txt"
 			
 			v_T, v_C, v_C_B = DSM_power_flow(self.distribution_network_fn, load_T, load_C, load_C_B)
 			

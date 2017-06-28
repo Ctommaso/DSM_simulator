@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import pylab
 import Generate_tree as Tree
 from Load_tree import Load_tree_data
+from src.power_flow.DSM_power_flow import *
 import numpy as np
 import pandas as pd
 import os
@@ -106,7 +107,7 @@ def plot_line_load(num_nodes,start_day,num_days,R40,Domestic_appliances,pv_effic
 	
 	initial_dir = os.getcwd()
 	tree_dir = "Data/Distribution_network_data/"
-	fn = tree_dir+"/Tree_N="+str(num_nodes)
+	fn = tree_dir+"Tree_N="+str(num_nodes)
 	if os.path.exists(fn):
 		print "TREE ALREADY EXISTS -- I AM USING AN OLD ONE"
 		Adj,Num_of_children,Levels,Descendants,Descendants_ids = Load_tree_data(num_nodes,fn)
@@ -116,6 +117,7 @@ def plot_line_load(num_nodes,start_day,num_days,R40,Domestic_appliances,pv_effic
 		Adj, Levels, Num_of_children = Tree.generate_tree(num_nodes)
 		Descendants, Descendants_ids = Tree.Tree_statistics(num_nodes,Adj,Levels,Num_of_children)
 		Tree.Save_tree(num_nodes,Adj,Levels,Num_of_children,Descendants,Descendants_ids,"Tree_N="+str(num_nodes))
+		prepare_load_flow_network(num_nodes, Adj)
 		os.chdir(initial_dir)
 	
 	fig = plt.figure()
