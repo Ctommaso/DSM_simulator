@@ -27,8 +27,7 @@ def run_power_flow(args):
 def DSM_power_flow(graph_fn, p_T, p_C, p_C_B):
 
 	# Load graph
-	network_dir = "Data/Distribution_network_data" 
-	busses, lines, S_BASE = load_MATPOWER(os.path.join(network_dir, graph_fn))
+	busses, lines, S_BASE = load_MATPOWER(graph_fn)
 	g = Electrical_network(busses, lines, S_BASE)
 	num_busses = len(g.busses)
 	

@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-from Tree_network.Load_tree import Load_tree_data
-from Tree_network.Generate_tree import Line_load, Plot_tree
+from Load_tree import Load_tree_data
+from Generate_tree import Line_load, Plot_tree
 import pylab
 from matplotlib import rc
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
@@ -69,9 +69,8 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 
 	# Load tree
 	num_busses = len(V_T[0])
-	tree_dir = "Visualization_Scripts/Tree_network"
-	fn = tree_dir+"/Tree_N="+str(num_busses)
-	adj, num_of_children, levels, descendants, descendants_ids = Load_tree_data(num_busses,fn)
+	tree_dir = "Data/Distribution_network_data/Tree_N="+str(num_busses)
+	adj, num_of_children, levels, descendants, descendants_ids = Load_tree_data(num_busses,tree_dir)
 		
 	for n, V in enumerate(Voltages):
 

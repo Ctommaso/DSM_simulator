@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pylab
-import Tree_network.Generate_tree as Tree
-from Tree_network.Load_tree import Load_tree_data
+import Generate_tree as Tree
+from Load_tree import Load_tree_data
 import numpy as np
 import pandas as pd
 import os
@@ -10,7 +10,7 @@ import sys
 ### PLOTS THE LOAD ON A GIVEN BRANCH DEPENDING ON WHERE WE CLICK
 def click(event,X,Y,Descendants_ids,Load_T,Load_C,Load_C_B,start_day,num_days,time,pv_surf):
 	tb = pylab.get_current_fig_manager().toolbar
-	if event.button==1 and event.inaxes and tb.mode == '':
+	if event.dblclick and event.button==1 and event.inaxes and tb.mode == '':
 		x,y = event.xdata,event.ydata
 		node = np.nanargmin((X-x)**2+(Y-y)**2)
 		plt.plot(X[node],Y[node],'rs')
@@ -22,9 +22,9 @@ def click(event,X,Y,Descendants_ids,Load_T,Load_C,Load_C_B,start_day,num_days,ti
 	
 		fig, ax = plt.subplots(2, sharex=True)
 		fig.subplots_adjust(right=0.93, left=0.07,top=0.95,bottom=0.08,hspace=0.15)
-		ax[0].plot(time,load_T,label="Thermostat Node="+str(node),linewidth=1.5,c="g")
-		ax[0].plot(time,load_C,label="Control Node="+str(node),linewidth=1.5,c="r")
-		ax[0].plot(time,load_C_B,label="Control + Battery Node="+str(node),linewidth=1.5,c="b")
+		ax[0].plot(time,load_T,label = "Thermostat Node="+str(node),linewidth=1.5,c="g")
+		ax[0].plot(time,load_C,label = "Control Node="+str(node),linewidth=1.5,c="r")
+		ax[0].plot(time,load_C_B,label = "Control + Battery Node="+str(node),linewidth=1.5,c="b")
 		ax[1].plot([start_day*24+12+n*24 for n in range(0,num_days)],Mean_T,'-og',label="Daily Mean Thermostat Node="+str(node),linewidth=2)
 		ax[1].plot([start_day*24+12+n*24 for n in range(0,num_days)],Mean_C,'-or',label="Daily Mean Control Node="+str(node),linewidth=2)
 		ax[1].plot([start_day*24+12+n*24 for n in range(0,num_days)],Mean_C_B,'-ob',label="Daily Mean Control + Battery Node="+str(node),linewidth=2)
@@ -104,12 +104,12 @@ def plot_line_load(num_nodes,start_day,num_days,R40,Domestic_appliances,pv_effic
 	Load_C = np.concatenate((np.zeros((24*60*num_days,1)), Load_C),axis=1)
 	Load_C_B = np.concatenate((np.zeros((24*60*num_days,1)), Load_C_B),axis=1)
 	
-	initial_dir=os.getcwd()
-	tree_dir="Visualization_Scripts/Tree_network"
-	fn=tree_dir+"/Tree_N="+str(num_nodes)
+	initial_dir = os.getcwd()
+	tree_dir = "Data/Distribution_network_data/"
+	fn = tree_dir+"/Tree_N="+str(num_nodes)
 	if os.path.exists(fn):
 		print "TREE ALREADY EXISTS -- I AM USING AN OLD ONE"
-		Adj,Num_of_children,Levels,Descendants,Descendants_ids=Load_tree_data(num_nodes,fn)
+		Adj,Num_of_children,Levels,Descendants,Descendants_ids = Load_tree_data(num_nodes,fn)
 	else: 
 		os.chdir(tree_dir)
 		print "TREE DOES NOT EXIST -- I AM CREATING ONE"

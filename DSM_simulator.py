@@ -240,14 +240,20 @@ class Simulator(object):
 		head, tail = ntpath.split(self.neighborhood_fn)
 		
 		num_loads = len(np.loadtxt(self.neighborhood_fn))
+
+		boiler_fn = ntpath.dirname(head) + "/Boiler_data/Boiler_settings_"+str(num_loads)+".dat"
+		distribution_network_fn = ntpath.dirname(head) + "/Distribution_network_data/Tree_N="+str(num_loads+1)+"/case"+str(num_loads+1)+".txt"
 		
-		self.boiler_fn = ntpath.dirname(head) + "/Boiler_data/Boiler_settings_"+str(num_loads)+".dat"
-		self.distribution_network_fn = ntpath.dirname(head) + "/Distribution_network_data/case"+str(num_loads+1)+".txt"
-		
-		self.old_neighborhood_data = True
-		self.entry_nodes.insert(0,str(num_loads))
-		self.entry_nodes.delete(len(str(num_loads)),END)
-		self.entry_nodes.config(state='disabled')
+		if os.path.isfile(boiler_fn) and os.path.isfile(distribution_network_fn):
+			self.boiler_fn = boiler_fn
+			self.distribution_network_fn = distribution_network_fn
+			self.old_neighborhood_data = True
+			self.entry_nodes.insert(0,str(num_loads))
+			self.entry_nodes.delete(len(str(num_loads)),END)
+			self.entry_nodes.config(state='disabled')
+			print "Loaded input files: Neighborhood, Boiler and Power flow"
+		else:
+			print "Missing Boiler of Power flow input files "
 		
 	#Function to run the simulation
 	def run(self):
@@ -341,12 +347,11 @@ class Simulator(object):
 		os.chdir("../")
 		self.simulation_over=True
 		print "Here I am at the end ", os.getcwd()
+		self.old_neighborhood_data = False
 
 	#Function to free the memory
 	def clean_up(self):
 		
-		#tracker = SummaryTracker()
-
 		gc.collect()
 		del self.T
 		del self.R90
