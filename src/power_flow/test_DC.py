@@ -6,9 +6,9 @@ import os
 
 print("Testing DC-NR solver against MATPOWER testcases")
 
-testcases = ["case14.m","case57.m","case89pegase.m","case118.m","case300.m",
-			 "case1354pegase.m","case2869pegase.m","case9241pegase.m", 
-			"case13659pegase.m"
+testcases = ["case14.txt","case57.txt","case89pegase.txt","case118.txt","case300.txt",
+			 "case1354pegase.txt","case2869pegase.txt","case9241pegase.txt", 
+			"case13659pegase.txt"
 			]
 
 
@@ -29,7 +29,7 @@ for fn in testcases:
 	vs = g.busses
 	slack_id = filter(lambda v: v.bus_type==3, vs)[0].bus_id
 	
-	path_solved = os.path.join(solved_cases_dir,fn[:-2]+'.txt')
+	path_solved = os.path.join(solved_cases_dir,fn)
 	Solved = np.loadtxt(path_solved)
 	Vsolved, Tsolved = Solved[:,0], Solved[:,1]
 	Tsolved -= Tsolved[slack_id]

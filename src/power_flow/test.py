@@ -6,9 +6,9 @@ import os
 
 print("Testing NR solver against MATPOWER testcases")
 
-testcases = ["case14.m","case57.m","case89pegase.m","case118.m","case300.m",
-			 "case1354pegase.m","case2869pegase.m","case9241pegase.m", 
-			#"case13659pegase.m" #Only converges with the hot start
+testcases = ["case14.txt","case57.txt","case89pegase.txt","case118.txt","case300.txt",
+			 "case1354pegase.txt","case2869pegase.txt","case9241pegase.txt", 
+			#"case13659pegase.txt" #Only converges with the hot start
 			]
 
 testcase_dir = "MATPOWER"
@@ -20,7 +20,7 @@ Sol = np.loadtxt(os.path.join(solved_cases_dir,solved_cases_fn))
 for fn in testcases:
 	print("*****", fn ,"*****")
 	path = os.path.join(testcase_dir,fn)
-	path_solved = os.path.join(solved_cases_dir,fn[:-2]+'.txt')
+	path_solved = os.path.join(solved_cases_dir,fn)
 	
 	busses, lines ,S_BASE = load_MATPOWER(path)
 	g = Electrical_network(busses, lines, S_BASE)
