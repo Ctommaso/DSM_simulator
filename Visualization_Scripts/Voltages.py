@@ -78,7 +78,6 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 		# Static plot 
 		fig = plt.figure()
 		fig.number = n
-		fig.subplots_adjust(right=0.99, left=0.07,top=0.95,bottom=0.08,wspace=0.11)
 		
 		ax1 = plt.subplot2grid((3, 1), (0, 0))
 		ax2 = plt.subplot2grid((3, 1), (1, 0))
@@ -103,6 +102,7 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 		
 		ax2.xaxis.grid()
 		ax3.xaxis.grid()
+		fig.subplots_adjust(right=0.98, left=0.07,top=0.95,bottom=0.08,wspace=0.11)
 		
 		# Dynamic plot
 		fig.canvas.mpl_connect('button_press_event',lambda event: click(event, coord, Voltages, P_data, descendants_ids))
