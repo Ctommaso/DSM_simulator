@@ -24,14 +24,14 @@ def click(event, coord, v_data, P_data, descendants_ids):
 			x, y = event.xdata, event.ydata
 			if event.inaxes == ax1ins:
 				node_id = np.nanargmin((xnode-x)**2+(ynode-y)**2)
-				l1 = ax1.plot(v_data[0][:,node_id],"--",linewidth=2.,label = "Bus "+str(node_id))
+				l1 = ax1.plot(v_data[1][:,node_id],"--",linewidth=2.,label = "Bus "+str(node_id))
 				ax1.plot(v_data[2][:,node_id],"-",linewidth=2.,c = l1[0].get_color(), label = "Bus "+str(node_id))
 				
 				ax1.set_ylim(0.8,1.05)
 				ax1ins.scatter(xnode[node_id],ynode[node_id], c=l1[0].get_color(), s=60, marker="s",lw=0.5)
 				
 				# Computation of the line load
-				line_load, mean, std = Line_load(descendants_ids,P_data[0],node_id)
+				line_load, mean, std = Line_load(descendants_ids,P_data[1],node_id)
 				# Conversion of the line load to [kW]
 				ax2.plot(line_load*1e-03, "--",linewidth=2.,c = l1[0].get_color(),label = "Bus "+str(node_id)) 
 
