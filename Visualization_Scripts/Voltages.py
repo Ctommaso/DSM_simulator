@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Load_tree import Load_tree_data
 from Generate_tree import Line_load, Plot_tree
+from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import pylab
 from matplotlib import rc
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
@@ -12,8 +13,9 @@ rc('text', usetex=True)
 # On click event plot the bus voltage
 def click(event, coord, v_data, P_data, descendants_ids):
 	
-	ax1, ax2, ax3 = event.canvas.figure.get_axes()
+	ax1, ax2, ax1ins = event.canvas.figure.get_axes()
 	n = event.canvas.figure.number
+
 	P = P_data[n]
 	v = v_data[n]
 	if event.dblclick:
@@ -22,41 +24,44 @@ def click(event, coord, v_data, P_data, descendants_ids):
 		tb = pylab.get_current_fig_manager().toolbar
 		if event.button==1 and tb.mode == '':
 			x, y = event.xdata, event.ydata
-			if event.inaxes == ax1:
+			if event.inaxes == ax1ins:
 				node_id = np.nanargmin((xnode-x)**2+(ynode-y)**2)
-				ax1.scatter(xnode[node_id],ynode[node_id],s=60, c='r', edgecolor="k", marker="s",lw=0.5)
-				ax2.plot(v[:,node_id],"o-",label = "Bus "+str(node_id))
-				ax2.set_ylim(0.8,1.05)
+				l1 = ax1.plot(v[:,node_id],"-",linewidth=2.,label = "Bus "+str(node_id))
+				ax1.set_ylim(0.8,1.05)
+				ax1ins.scatter(xnode[node_id],ynode[node_id],c = l1[0].get_color(),  s = 60, marker="s",lw=0.5)
 				
 				# Computation of the line load
 				line_load, mean, std = Line_load(descendants_ids,P,node_id)
 				# Conversion of the line load to [kW]
-				ax3.plot(line_load*1e-03, "-",label = "Bus "+str(node_id)) 
+				ax2.plot(line_load*1e-03, "-",linewidth=2.,c = l1[0].get_color(),label = "Bus "+str(node_id)) 
+				ax1.legend()
 				ax2.legend()
-				ax3.legend()
-				
+								
 				plt.show()
 	
 
 # On key event plot the bus voltage
 def onkey(event):
 	
-	ax1, ax2, ax3 = event.canvas.figure.get_axes()
-	to_remove = len(ax1.collections)
+	ax1, ax2, ax1ins = event.canvas.figure.get_axes()
+	to_remove = len(ax1ins.collections)
 
-	if event.key == 'c' and ax1.collections>1:
-		positions = ax2.get_xticks()
-		labels = ax2.get_xticklabels()
+	if event.key == 'c' and ax1ins.collections>1:
+		positions = ax1.get_xticks()
+		labels = ax1.get_xticklabels()
 		for n in range(1,to_remove):
-			ax1.collections.pop(-1)
+			ax1ins.collections.pop(-1)
+		ax1.cla()
 		ax2.cla()
-		ax3.cla()
+		ax1.set_xticks(positions)
 		ax2.set_xticks(positions)
-		ax3.set_xticks(positions)
+		ax1.set_xticklabels(labels)
 		ax2.set_xticklabels(labels)
-		ax3.set_xticklabels(labels)
+		ax1.set_ylabel(r"$V$ [p.u.]", fontsize=25)
+		ax2.set_ylabel(r"$P_{\rm el}$"+" "+r"$[{\rm kW}]$", fontsize=30)			
+		ax2.set_xlabel(r"Day", fontsize=25)
+		ax1.xaxis.grid()
 		ax2.xaxis.grid()
-		ax3.xaxis.grid()
 		plt.show()
 
 
@@ -75,32 +80,30 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 	for n, V in enumerate(Voltages):
 
 		# Static plot 
-		fig = plt.figure()
+		fig , (ax1, ax2) = plt.subplots(2, sharex = True)
 		fig.number = n
 		
-		ax1 = plt.subplot2grid((3, 1), (0, 0))
-		ax2 = plt.subplot2grid((3, 1), (1, 0))
-		ax3 = plt.subplot2grid((3, 1), (2, 0), sharex=ax2)
-		
-		coord = Plot_tree(fig, ax1, num_busses, adj, levels, num_of_children)
-				
-		ax2.set_xlim(0,len(P_data[n]))
-		ax2.set_ylim(0.8,1.05)
-		ax2.set_ylabel(r"$V$ [p.u.]", fontsize=25)
-		ax3.set_ylabel(r"$P_{\rm el}$"+" "+r"$[{\rm kW}]$", fontsize=30)			
-		ax3.set_xlabel(r"Day", fontsize=25)
+		ax1ins = inset_axes(ax1,width="30%", height="30%",loc=4)
 
+		coord = Plot_tree(fig, ax1ins, num_busses, adj, levels, num_of_children)
+				
+		ax1.set_xlim(0,len(P_data[n]))
+		ax1.set_ylim(0.8,1.05)
+		ax1.set_ylabel(r"$V$ [p.u.]", fontsize=25)
+		ax2.set_ylabel(r"$P_{\rm el}$"+" "+r"$[{\rm kW}]$", fontsize=30)			
+		ax2.set_xlabel(r"Day", fontsize=25)
+
+		ax1.tick_params(axis = 'both', which = 'major',pad=10, labelsize=20)
 		ax2.tick_params(axis = 'both', which = 'major',pad=10, labelsize=20)
-		ax3.tick_params(axis = 'both', which = 'major',pad=10, labelsize=20)
 		positions = [1440*m for m in range(0,len(P_data[n])/1440)]
 		labels = [m for m in range(0,len(P_data[n])/1440)]
+		ax1.set_xticks(positions)
 		ax2.set_xticks(positions)
-		ax3.set_xticks(positions)
+		ax1.set_xticklabels(labels)
 		ax2.set_xticklabels(labels)
-		ax3.set_xticklabels(labels)
 		
+		ax1.xaxis.grid()
 		ax2.xaxis.grid()
-		ax3.xaxis.grid()
 		fig.subplots_adjust(right=0.98, left=0.07,top=0.95,bottom=0.08,wspace=0.11)
 		
 		# Dynamic plot

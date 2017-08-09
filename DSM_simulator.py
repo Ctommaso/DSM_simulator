@@ -122,7 +122,7 @@ class Simulator(object):
 		self.power_flow_button = Button(master, text="Run power flow", command=self.run_power_flow,font=("Helvetica", 12),bg='white',fg='black')
 
 		# Layout
-		self.master.title("Simulator AUTOQUAR")
+		self.master.title("Simulator Stosys")
 		self.master.configure(background='white')
 		self.label_message.grid(row=0, column=0,columnspan=3, sticky=W)
 		self.load_neighborhood_button.grid(row=1, column=0,columnspan=1, sticky=W)

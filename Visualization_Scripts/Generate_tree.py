@@ -80,9 +80,11 @@ def Plot_tree(fig, ax, N, Adj, Levels, Num_of_children):
 			break
 
 	ax.scatter(X,Y,s=20, c='k', marker="o",lw=0.1)	
+	# Node annotations
+	"""
 	for i in range(0,N):
 		ax.annotate(str(i), xy=(X[i],Y[i]),fontsize=10)
-	
+	"""
 	### PLOT LINES
 	for i in range(0,len(Adj),2):
 		id_1,id_2=Adj[i]
