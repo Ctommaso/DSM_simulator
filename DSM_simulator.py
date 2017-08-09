@@ -16,7 +16,7 @@ from Visualization_Scripts.Self_Consumption import plot_self_consumption
 from Visualization_Scripts.Line_Load import plot_line_load
 from Visualization_Scripts.Switch_counts import plot_switch_counts
 from Visualization_Scripts.Boiler_Consumption import plot_boilers
-from Visualization_Scripts.Voltages import plot_voltages
+from Visualization_Scripts.Voltages2 import plot_voltages
 import Visualization_Scripts.Generate_tree as Tree
 
 class Simulator(object):
