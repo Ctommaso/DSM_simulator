@@ -16,7 +16,7 @@ from Visualization_Scripts.Self_Consumption import plot_self_consumption
 from Visualization_Scripts.Line_Load import plot_line_load
 from Visualization_Scripts.Switch_counts import plot_switch_counts
 from Visualization_Scripts.Boiler_Consumption import plot_boilers
-from Visualization_Scripts.Voltages2 import plot_voltages
+from Visualization_Scripts.Voltages import plot_voltages
 import Visualization_Scripts.Generate_tree as Tree
 
 class Simulator(object):
@@ -472,12 +472,15 @@ class Simulator(object):
 		
 			self.distribution_network_fn = fn + "/case"+str(num_busses)+".txt"
 			
-			v_T, v_C, v_C_B = DSM_power_flow(self.distribution_network_fn, load_T, load_C, load_C_B)
+			# To speed up perform Power flow calculation every deltat minutes
+			deltat_PF = 10 
+			time = np.arange(len(load_T))[::deltat_PF]
+			v_T, v_C, v_C_B = DSM_power_flow(self.distribution_network_fn, load_T[::deltat_PF,:], load_C[::deltat_PF,:], load_C_B[::deltat_PF,:])
 			
 			self.message.set("STATUS: Plotting data")
 			self.master.update_idletasks()
 			
-			plot_voltages(v_T, v_C, v_C_B, load_T, load_C, load_C_B)
+			plot_voltages(self.start_day, self.num_days, time, v_T, v_C, v_C_B, load_T[::deltat_PF,:], load_C[::deltat_PF,:], load_C_B[::deltat_PF,:])
 			
 			self.message.set("STATUS: Done plotting")
 			self.master.update_idletasks()

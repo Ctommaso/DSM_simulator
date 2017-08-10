@@ -11,7 +11,7 @@ rc('text', usetex=True)
 
 
 # On click event plot the bus voltage
-def click(event, coord, v_data, P_data, descendants_ids):
+def click(event, time, coord, v_data, P_data, descendants_ids):
 	
 	ax1, ax2, ax1ins = event.canvas.figure.get_axes()
 	n = event.canvas.figure.number
@@ -24,8 +24,8 @@ def click(event, coord, v_data, P_data, descendants_ids):
 			x, y = event.xdata, event.ydata
 			if event.inaxes == ax1ins:
 				node_id = np.nanargmin((xnode-x)**2+(ynode-y)**2)
-				l1 = ax1.plot(v_data[1][:,node_id],"--",linewidth=2.,label = "Bus "+str(node_id))
-				ax1.plot(v_data[2][:,node_id],"-",linewidth=2.,c = l1[0].get_color(), label = "Bus "+str(node_id))
+				l1 = ax1.plot(time, v_data[1][:,node_id],"--",linewidth=2.,label = "Bus "+str(node_id))
+				ax1.plot(time, v_data[2][:,node_id],"-",linewidth=2.,c = l1[0].get_color(), label = "Bus "+str(node_id))
 				
 				ax1.set_ylim(0.8,1.05)
 				ax1ins.scatter(xnode[node_id],ynode[node_id], c=l1[0].get_color(), s=60, marker="s",lw=0.5)
@@ -33,12 +33,12 @@ def click(event, coord, v_data, P_data, descendants_ids):
 				# Computation of the line load
 				line_load, mean, std = Line_load(descendants_ids,P_data[1],node_id)
 				# Conversion of the line load to [kW]
-				ax2.plot(line_load*1e-03, "--",linewidth=2.,c = l1[0].get_color(),label = "Bus "+str(node_id)) 
+				ax2.plot(time, line_load*1e-03, "--",linewidth=2.,c = l1[0].get_color(),label = "Bus "+str(node_id)) 
 
 				# Computation of the line load
 				line_load, mean, std = Line_load(descendants_ids,P_data[2],node_id)
 				# Conversion of the line load to [kW]
-				ax2.plot(line_load*1e-03, "-",linewidth=2.,c = l1[0].get_color(),label = "Bus "+str(node_id)) 
+				ax2.plot(time, line_load*1e-03, "-",linewidth=2.,c = l1[0].get_color(),label = "Bus "+str(node_id)) 
 
 				ax1.legend()
 				ax2.legend()
@@ -71,9 +71,8 @@ def onkey(event):
 		plt.show()
 
 
-def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
+def plot_voltages(start_day, num_days, time, V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 	
-	Voltages = [V_T, V_C, V_C_B]
 	Voltages = [V_T, V_C, V_C_B]
 	P_data = [P_T, P_C, P_C_B]
 	title = ["Thermostat", "Control", "Control + Batt"]
@@ -98,8 +97,10 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 
 	ax1.tick_params(axis = 'both', which = 'major',pad=10, labelsize=20)
 	ax2.tick_params(axis = 'both', which = 'major',pad=10, labelsize=20)
-	positions = [1440*m for m in range(0,len(P_data[0])/1440)]
-	labels = [m for m in range(0,len(P_data[0])/1440)]
+	
+	positions = [1440*m for m in range(0,num_days)]
+	labels = [start_day + m for m in range(0,num_days)]
+	
 	ax1.set_xticks(positions)
 	ax2.set_xticks(positions)
 	ax1.set_xticklabels(labels)
@@ -110,7 +111,7 @@ def plot_voltages(V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 	fig.subplots_adjust(right=0.98, left=0.08,top=0.95,bottom=0.08,wspace=0.11)
 		
 	# Dynamic plot
-	fig.canvas.mpl_connect('button_press_event',lambda event: click(event, coord, Voltages, P_data, descendants_ids))
+	fig.canvas.mpl_connect('button_press_event',lambda event: click(event, time, coord, Voltages, P_data, descendants_ids))
 	fig.canvas.mpl_connect('key_press_event', lambda event: onkey(event))
 	
 	mng = plt.get_current_fig_manager()
