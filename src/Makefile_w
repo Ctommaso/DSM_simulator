@@ -3,7 +3,7 @@ CFLAGS= -std=c++11 -Wall -g -pedantic -O3
 LDFLAGS= -std=c++11 -Wall -pedantic -O3 -static
 EXEC1 = HeatPump.exe
 EXEC2 = Boilers.exe
-VPATH = AutoQuar_Classes
+VPATH = Classes
 
 all: $(EXEC1) $(EXEC2)
 

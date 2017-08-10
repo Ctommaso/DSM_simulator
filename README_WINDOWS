@@ -1,4 +1,4 @@
-In order to run AutoQuar.py under Windows you need:
+In order to run DSM_simulator.py under Windows you need:
 - python 2.7 64bit (required to run the GUI and plotting scripts)
 - MinGW (required to compile c++ code)
 - Miktex (latex distribution to make plots look nice)
@@ -46,8 +46,8 @@ To install python 2.7 64bit:
 Compile the c++ exes:
 	Open a terminal: click on the magnifying glass (or windows symbol)
 	write cmd then <enter>
-	write cd "<location autoquar>\src" 
+	write cd "<location DSM_simulator>\src" 
 	run "mingw32-make -f Makefile_w"
 
-Run AutoQuar.py:
-	double-click on AutoQuar.py
+Run DSM_simulator.py:
+	double-click on DSM_simulator.py

@@ -2,11 +2,11 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
-#include "AutoQuar_Classes/Array.h"
-#include "AutoQuar_Classes/Boiler.h"
-#include "AutoQuar_Classes/Weather.h"
-#include "AutoQuar_Classes/Time_integration.h"
-#include "AutoQuar_Classes/Control.h"
+#include "Classes/Array.h"
+#include "Classes/Boiler.h"
+#include "Classes/Weather.h"
+#include "Classes/Time_integration.h"
+#include "Classes/Control.h"
 using namespace std;
 
 // FUNCTION DEFINITIONS ************************************************

@@ -4,13 +4,13 @@
 #include <chrono>
 #include <functional>
 #include <random>
-#include "AutoQuar_Classes/Array.h"
-#include "AutoQuar_Classes/House.h"
-#include "AutoQuar_Classes/Neighborhood.h"
-#include "AutoQuar_Classes/Weather.h"
-#include "AutoQuar_Classes/Battery.h"
-#include "AutoQuar_Classes/Control.h"
-#include "AutoQuar_Classes/Time_integration.h"
+#include "Classes/Array.h"
+#include "Classes/House.h"
+#include "Classes/Neighborhood.h"
+#include "Classes/Weather.h"
+#include "Classes/Battery.h"
+#include "Classes/Control.h"
+#include "Classes/Time_integration.h"
 using namespace std;
 
 //Function definitions *****

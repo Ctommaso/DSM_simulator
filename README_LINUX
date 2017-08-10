@@ -24,5 +24,5 @@ Command lines to clean up are:
 
 To run the code:
 - Open a terminal
-- Navigate to the directory containing Sim_AutoQuar.py
-- Type python Sim_AutoQuar.py
+- Navigate to the directory containing DSM_simulator.py
+- Type python DSM_simulator.py
