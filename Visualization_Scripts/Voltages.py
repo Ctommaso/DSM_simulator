@@ -76,16 +76,26 @@ def plot_voltages(start_day, num_days, time, V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 	num_busses = len(V_T[0])
 	tree_dir = "Data/Distribution_network_data/Tree_N="+str(num_busses)
 	adj, num_of_children, levels, descendants, descendants_ids = Load_tree_data(num_busses,tree_dir)
-		
+	
+	fig1, fig2, fig3 = plt.figure(), plt.figure(), plt.figure()
+	
+	f1_ax1 = fig1.add_subplot(211)
+	f1_ax2 = fig1.add_subplot(212, sharex = f1_ax1)
+	f2_ax1 = fig2.add_subplot(211)
+	f2_ax2 = fig2.add_subplot(212, sharex = f2_ax1, sharey = f1_ax2)
+	f3_ax1 = fig3.add_subplot(211)
+	f3_ax2 = fig3.add_subplot(212, sharex = f3_ax1, sharey = f1_ax2)
+	
+	fig = [fig1, fig2, fig3]
+	
 	for n, V in enumerate(Voltages):
 
 		# Static plot 
-		fig , (ax1, ax2) = plt.subplots(2, sharex = True)
-		fig.number = n
-		
+		fig[n].number = n
+		ax1, ax2 = fig[n].axes
 		ax1ins = inset_axes(ax1,width="30%", height="30%",loc=4)
 
-		coord = Plot_tree(fig, ax1ins, num_busses, adj, levels, num_of_children)
+		coord = Plot_tree(fig[n], ax1ins, num_busses, adj, levels, num_of_children)
 				
 		ax1.set_xlim(0,len(P_data[n]))
 		ax1.set_ylim(0.8,1.05)
@@ -104,12 +114,12 @@ def plot_voltages(start_day, num_days, time, V_T, V_C, V_C_B, P_T, P_C, P_C_B):
 		
 		ax1.xaxis.grid()
 		ax2.xaxis.grid()
-		fig.subplots_adjust(right=0.98, left=0.07,top=0.95,bottom=0.08,wspace=0.11)
+		fig[n].subplots_adjust(right=0.98, left=0.07,top=0.95,bottom=0.08,wspace=0.11)
 		
 		# Dynamic plot
-		fig.canvas.mpl_connect('button_press_event',lambda event: click(event, time, coord, Voltages, P_data, descendants_ids))
-		fig.canvas.mpl_connect('key_press_event', lambda event: onkey(event))
-		fig.suptitle(title[n], fontsize=25)
+		fig[n].canvas.mpl_connect('button_press_event',lambda event: click(event, time, coord, Voltages, P_data, descendants_ids))
+		fig[n].canvas.mpl_connect('key_press_event', lambda event: onkey(event))
+		fig[n].suptitle(title[n], fontsize=25)
 		mng = plt.get_current_fig_manager()
 		mng.resize(*mng.window.maxsize())
 		plt.ion()
