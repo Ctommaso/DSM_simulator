@@ -3,10 +3,11 @@ Install Python 2.7 as well as the libraries
 
 -numpy >= 1.11.0
 -scipy >= 0.17.0
--matplotlib
--pandas
+-matplotlib >=1.5.1
+-pandas >= 0.17.0
 -Tkinter
 -PIL
+
 
 
 Compile the c++ executables:
@@ -26,3 +27,6 @@ To run the code:
 - Open a terminal
 - Navigate to the directory containing DSM_simulator.py
 - Type python DSM_simulator.py
+
+**** CAREFUL **** The code overwrites directories with exsisting results!
+

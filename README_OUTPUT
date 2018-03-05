@@ -4,10 +4,10 @@ le dossier Results_Fribourg contiens les fichiers suivants:
 #### FICHIERS DE PARAMETERS DE LA SIMULATION #####
 
 1) Input_Heat_Pump.txt 
-[Nb. maisons, 1er jour, Nb. de jours simulés, Smart/Thermostat (boolen pas important pour toi), Nom du fichier de Temperature, Nom du fichier de Radiation 90 degrés, Nom du fichier de Radiation 40 degrés, Nom du fichier de Charge Residuelle, Surface vitrée moyenne [m²], Surface de PV par maison [m²], Efficacité des PV 18% ]
+[Nb. maisons, 1er jour, Nb. de jours simulés, Nom du fichier de Temperature, Nom du fichier de Radiation 90 degrés, Nom du fichier de Radiation 40 degrés, Nom du fichier de Charge Residuelle, Surface vitrée moyenne [m²], Capacité batteries [kWh], Puissance batteries [kW], Simulation d'un quartier sauvegardé dans /Data/Neighborhood: oui/non (1/0), Surface de PV par maison [m²], Efficacité des PV 18% ]
 
 2) Input_Boilers.txt (uniquement si il a été choisi de simuler aussi les boilers)
-[Nb. maisons, 1er jour, Nb. de jours simulés, Smart/Thermostat (boolen), Nom du fichier de consommation d'eau chaude,Nom du fichier de Temperature, Nom du fichier de Radiation 90 degrés, Nom du fichier de Radiation 40 degrés]
+[Nb. maisons, 1er jour, Nb. de jours simulés, Simulation d'un quartier sauvegardé dans /Data/Neighborhood: oui/non (1/0), Nom du fichier de consommation d'eau chaude, Nom du fichier de Temperature, Nom du fichier de Radiation 90 degrés, Nom du fichier de Radiation 40 degrés]
 
 3) Neighborhood.dat
 Paramètres des maisons
@@ -19,11 +19,11 @@ Paramètres des boilers
 
 5) Données météo (temperature, et radiation sur surface verticale ou inclinée a 40° [W/m²]) à la minute: T.dat, R40.dat,R90.dat
 
-6) Consommation d'eau chaude en [Litres]: Hot_water.dat (uniquement si il a été choisi de simuler aussi les boilers)
-(autant de colonnes que de boilers simulés, autant de lignes que de minutes simulées)
+6) Consommation d'eau chaude en [Litres/minute]: Hot_water.dat (uniquement si il a été choisi de simuler aussi les boilers)
+Autant de colonnes que de boilers simulés, autant de lignes que de minutes simulées.
 
 7) House_aggregate.dat consommations des charges domestiques non déplacables agrégés par maison [W] (frigo, cuisson, etc.)
-(autant de colonnes que de maisons simulés, autant de lignes que de minutes simulées)
+Generé à partir de behavsim, autant de colonnes que de maisons simulés, autant de lignes que de minutes simulées.
 
 8) Charge residuelle agrégée pour le quartier Residual_load.dat [W]
    Charge residuelle agrégée pour le quartier + consommation boilers intelligents Residual_load_boilers.dat [W]
@@ -36,16 +36,18 @@ Consommation electrique des PACS pour chaque maison [W] avec pilotage (Control) 
 (autant de lignes que de minutes simulées)
 
 10) Res_HP_Control_B.dat
-Consommation electrique des charges flexibles pilotées par le code: PACS + Batteries pour chaque maison [W].
+Consommation electrique des charges flexibles pilotées par le controlleur: PACS + Batteries pour chaque maison [W].
 [1ere colonne temps [h], autant de colonnes que de maisons simulés [W], consommation des PACs+Batteries agregée [W]]
 (autant de lignes que de minutes simulées)
 
-10) Res_Boiler_Control.dat, Res_Boiler_Thermostat.dat consommation electrique des boilers [W] avec pilotage (Control) et sans pilotage (Thermostat). (uniquement si il a été choisi de simuler aussi les boilers)
+11) Res_Boiler_Control.dat, Res_Boiler_Thermostat.dat consommation electrique des boilers [W] avec pilotage (Control) et sans pilotage (Thermostat). (uniquement si il a été choisi de simuler aussi les boilers)
 [1ere colonne temps [h], Tempertures des boilers (autant de colonnes que de boilers), Consommation electrique des boilers [W]
 (autant de colonnes que de boilers), consommation des Boilers agregée [W]]
 
-11) Switch_counts_Control_B.dat, Switch_counts_Control.dat, Switch_counts_Thermostat.dat
+12) Switch_counts_Control_B.dat, Switch_counts_Control.dat, Switch_counts_Thermostat.dat
 Nombre d'enclemchements des PACs pendant la période simulée, avec pilotage (avec ou sans batteries) 
 et sans pilotage. 
 
-
+13) Battery_SoC_Control_B.dat
+Niveau de charge des batteries, normalisé entre [0,1].
+(autant de lignes que de minutes simulées, autant de colonnes que de maisons)
