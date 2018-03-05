@@ -9,7 +9,6 @@ Install Python 2.7 as well as the libraries
 -PIL
 
 
-
 Compile the c++ executables:
 
 - Open a terminal
@@ -28,5 +27,5 @@ To run the code:
 - Navigate to the directory containing DSM_simulator.py
 - Type python DSM_simulator.py
 
-**** CAREFUL **** The code overwrites directories with exsisting results!
+**** CAREFUL **** The code overwrites the results directory "/Results_CITY" if it already exists!
 
