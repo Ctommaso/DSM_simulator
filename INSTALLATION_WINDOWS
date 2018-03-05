@@ -1,0 +1,53 @@
+In order to run DSM_simulator.py under Windows you need:
+- python 2.7 64bit (required to run the GUI and plotting scripts)
+- MinGW (required to compile c++ code)
+- Miktex (latex distribution to make plots look nice)
+
+To install MinGW:
+- download mingw-get-setup.exe
+	from https://sourceforge.net/projects/mingw/files/Installer/
+- install MinGW
+	run mingw-get-setup.exe as administrator
+	check all packages from the Basic Setup
+	click on Apply Changes in the Installation menu
+
+To install python 2.7 64bit:
+- download Windows x86-64 MSI installer
+	from https://www.python.org/downloads/release/python-2712/
+	run the installer
+- run regedit
+	click on the magnifying glass
+	write regedit then <enter>
+	go to "\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environement"
+	double-click on "Path" and add ";<the location of MinGW>\bin;<the location of python>;<the location of python>\Scripts"
+	by default the locations of MinGW and of Python are C:\MinGW and C:\Python27
+	reboot the computer
+	open a terminal and write "python", python terminal should open.
+	exit by writing: "exit()"
+- install pip
+	download get-pip.py 
+	from https://bootstrap.pypa.io/get-pip.py
+	in the terminal run python <location of get-pip.py>\get-pip.py 
+
+- install libraries from http://www.lfd.uci.edu/~gohlke/pythonlibs/
+	- pandas
+	- matplotlib
+	- numpy >= 1.11.0
+	- scipy >= 0.17.0 (should be installed after numpy)
+	- pillow
+	for all these packages there are multiple .whl files, the good ones have cp27 and amd64
+	ex: numpy-1.11.1+mkl-cp27-cp27m-win_amd64.whl
+	the install command: pip install <a package ending by .whl>
+
+-install miktex 
+	download and install Miktex from	
+	http://miktex.org/download
+
+Compile the c++ exes:
+	Open a terminal: click on the magnifying glass (or windows symbol)
+	write cmd then <enter>
+	write cd "<location DSM_simulator>\src" 
+	run "mingw32-make -f Makefile_w"
+
+Run DSM_simulator.py:
+	double-click on DSM_simulator.py
